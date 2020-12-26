@@ -613,6 +613,7 @@ static
 int
 cmd_dispatch(char *cmd)
 {
+	kprintf("our cmd is %s", cmd)
 	time_t beforesecs, aftersecs, secs;
 	uint32_t beforensecs, afternsecs, nsecs;
 	char *args[MAXMENUARGS];
