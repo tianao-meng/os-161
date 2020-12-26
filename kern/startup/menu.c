@@ -275,7 +275,7 @@ cmd_panic(int nargs, char **args)
 
 static
 int
-cmd_dth()
+cmd_dth(int nargs, char **args)
 {
 	(void)nargs;
 	(void)args;
@@ -613,7 +613,7 @@ static
 int
 cmd_dispatch(char *cmd)
 {
-	kprintf("our cmd is %s", cmd)
+	//kprintf("our cmd is %s", cmd)
 	time_t beforesecs, aftersecs, secs;
 	uint32_t beforensecs, afternsecs, nsecs;
 	char *args[MAXMENUARGS];
