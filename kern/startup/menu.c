@@ -275,10 +275,10 @@ cmd_panic(int nargs, char **args)
 
 static
 int
-cmd_dth(int nargs, char **args)
+cmd_dth()
 {
-	(void)nargs;
-	(void)args;
+	// (void)nargs;
+	// (void)args;
 	
 	dbflags = DB_THREADS;
 	return 0;
