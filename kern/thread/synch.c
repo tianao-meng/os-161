@@ -228,6 +228,7 @@ lock_release(struct lock *lock)
     spinlock_acquire(&lock->lock_lock);
 
     lock -> lock_val = false;
+    lock -> lock_holder = NULL;
 
     wchan_wakeone(lock->lock_wchan);
 
@@ -239,10 +240,7 @@ bool
 lock_do_i_hold(struct lock *lock)
 {
         // Write this
-
-        
-
-    return lock - > lock_holder == curthread; // dummy until code gets written
+    return ((lock -> lock_holder) == curthread); // dummy until code gets written
 }
 
 ////////////////////////////////////////////////////////////
