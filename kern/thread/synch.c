@@ -229,7 +229,7 @@ lock_release(struct lock *lock)
 {
         // Write this
     KASSERT(lock != NULL);
-    KASSERT(lock -> lock_holder != NULL);
+    //KASSERT(lock -> lock_holder != NULL);
         // for robutness, assert no block in lock release
     KASSERT(curthread->t_in_interrupt == false);
 
