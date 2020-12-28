@@ -162,7 +162,17 @@ lock_create(const char *name)
                 kfree(lock);
                 return NULL;
         }
-        
+
+        lock->lock_wchan = wchan_create(lock->lk_name);
+        if (lock->lock_wchan == NULL) {
+            kfree(lock->lk_name);
+            kfree(lock);
+            return NULL;
+        }
+
+        spinlock_init(&lock->lock_lock);
+        lock -> lock_holder = NULL;
+        lock -> lock_val = false;
         // add stuff here as needed
         
         return lock;
@@ -177,22 +187,52 @@ lock_destroy(struct lock *lock)
         
         kfree(lock->lk_name);
         kfree(lock);
+        wchan_destroy(lock->lock_wchan);
+        spinlock_cleanup(&lock->lock_lock);
+        lock -> lock_holder = NULL;
+        lock -> lock_val = false;
+    
 }
 
 void
 lock_acquire(struct lock *lock)
 {
         // Write this
+    KASSERT(lock != NULL);
 
-        (void)lock;  // suppress warning until code gets written
+    spinlock_acquire(&lock->lock_lock);
+
+    while (lock -> lock_val == true){
+
+        wchan_lock(lock->lock_wchan);
+        spinlock_release(&lock->lock_lock);
+        wchan_sleep(lock->lock_wchan);
+        spinlock_acquire(&lock->lock_lock);
+
+    }
+
+    KASSERT(lock->lock_val == false);
+    lock -> lock_val = true;
+    lock -> lock_holder = curthread;
+    spinlock_release(&lock->lock_lock);
+
+        
 }
 
 void
 lock_release(struct lock *lock)
 {
         // Write this
+    KASSERT(lock != NULL);
 
-        (void)lock;  // suppress warning until code gets written
+    spinlock_acquire(&lock->lock_lock);
+
+    lock -> lock_val = false;
+
+    wchan_wakeone(lock->lock_wchan);
+
+    spinlock_release(&lock->lock_lock);
+
 }
 
 bool
@@ -200,9 +240,9 @@ lock_do_i_hold(struct lock *lock)
 {
         // Write this
 
-        (void)lock;  // suppress warning until code gets written
+        
 
-        return true; // dummy until code gets written
+    return lock - > lock_holder == curthread; // dummy until code gets written
 }
 
 ////////////////////////////////////////////////////////////
