@@ -202,9 +202,6 @@ lock_acquire(struct lock *lock)
     KASSERT(lock != NULL);
     KASSERT(lock -> lock_wchan != NULL);
 
-    // for robutness, assert no block in lock acquire
-    KASSERT(curthread->t_in_interrupt == false);
-
     spinlock_acquire(&lock->lock_lock);
 
     while (lock -> lock_val == true){
@@ -230,9 +227,6 @@ lock_release(struct lock *lock)
         // Write this
     KASSERT(lock != NULL);
     //KASSERT(lock -> lock_holder != NULL);
-        // for robutness, assert no block in lock release
-    KASSERT(curthread->t_in_interrupt == false);
-
     spinlock_acquire(&lock->lock_lock);
 
     // cause the lock is owned by thread
@@ -252,7 +246,6 @@ lock_do_i_hold(struct lock *lock)
 {
 
     KASSERT(lock != NULL);
-    KASSERT(curthread->t_in_interrupt == false);
         // Write this
     return ((lock -> lock_holder) == curthread); // dummy until code gets written
 }
