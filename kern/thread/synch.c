@@ -312,7 +312,7 @@ cv_wait(struct cv *cv, struct lock *lock)
     KASSERT(cv != NULL);
     KASSERT(cv -> cv_wchan != NULL);
     KASSERT(lock != NULL);
-    KASSERT(lock -> lock_do_i_hold(lock));
+    KASSERT(lock_do_i_hold(lock));
 
     wchan_lock(cv->cv_wchan);
     lock_release(lock);
