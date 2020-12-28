@@ -295,32 +295,32 @@ void
 cv_wait(struct cv *cv, struct lock *lock)
 {
         // Write this
-    spinlock_acquire(cv -> cv_lock);
+    spinlock_acquire(&cv -> cv_lock);
     lock_release(lock);
-    spinlock_release(cv -> cv_lock);
+    spinlock_release(&cv -> cv_lock);
     wchan_sleep(cv->cv_wchan);
-    spinlock_acquire(cv -> cv_lock);
+    spinlock_acquire(&cv -> cv_lock);
     lock_acquire(lock);
-    spinlock_release(cv -> cv_lock);
+    spinlock_release(&cv -> cv_lock);
 }
 
 void
 cv_signal(struct cv *cv, struct lock *lock)
 {
         // Write this
-    spinlock_acquire(cv -> cv_lock);
+    spinlock_acquire(&cv -> cv_lock);
     wchan_wakeone(cv->cv_wchan);
     lock_release(lock);
-    spinlock_release(cv -> cv_lock);
+    spinlock_release(&cv -> cv_lock);
 }
 
 void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
 	// Write this
-    spinlock_acquire(cv -> cv_lock);
+    spinlock_acquire(&cv -> cv_lock);
     wchan_wakeall(cv->cv_wchan);
     lock_release(lock);
-    spinlock_release(cv -> cv_lock);
+    spinlock_release(&cv -> cv_lock);
 
 }
