@@ -154,13 +154,13 @@ lock_create(const char *name)
 
         lock = kmalloc(sizeof(struct lock));
         if (lock == NULL) {
-                return NULL;
+            return NULL;
         }
 
         lock->lk_name = kstrdup(name);
         if (lock->lk_name == NULL) {
-                kfree(lock);
-                return NULL;
+            kfree(lock);
+            return NULL;
         }
 
         lock->lock_wchan = wchan_create(lock->lk_name);
@@ -186,11 +186,12 @@ lock_destroy(struct lock *lock)
         // add stuff here as needed
         
         kfree(lock->lk_name);
-        kfree(lock);
         wchan_destroy(lock->lock_wchan);
         spinlock_cleanup(&lock->lock_lock);
         lock -> lock_holder = NULL;
         lock -> lock_val = false;
+        kfree(lock);
+
     
 }
 
