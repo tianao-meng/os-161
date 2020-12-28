@@ -236,7 +236,7 @@ lock_release(struct lock *lock)
     spinlock_acquire(&lock->lock_lock);
 
     // cause the lock is owned by thread
-    if (lock_do_i_hold){
+    if (lock_do_i_hold(lock)){
         lock -> lock_val = false;
         lock -> lock_holder = NULL;
         wchan_wakeone(lock->lock_wchan);
