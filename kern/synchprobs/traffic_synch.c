@@ -189,8 +189,8 @@ intersection_after_exit(Direction origin, Direction destination)
 {
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  kprintf("Vehicle num: %d", num_cars_in_intersection);
-  KASSERT(num_cars_in_intersection != 0);
+  kprintf("Vehicle num: %d \n", num_cars_in_intersection);
+  //KASSERT(num_cars_in_intersection != 0);
   /* replace this default implementation with your own implementation */
   if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
 
