@@ -228,7 +228,7 @@ intersection_after_exit(Direction origin, Direction destination)
     if ((next -> origin == origin) && (next -> destination == destination)){
 
        current -> next = next -> next;
-       free(next);
+       kfree(next);
        num_cars_in_intersection--;
        cv_signal(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
