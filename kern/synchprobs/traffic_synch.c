@@ -235,7 +235,8 @@ intersection_after_exit(Direction origin, Direction destination)
     kfree(current);
     head = next;
     num_cars_in_intersection--;
-    cv_signal(intersectionCV, intersectionLock);
+    //cv_signal(intersectionCV, intersectionLock);
+    cv_broadcast(intersectionCV, intersectionLock);
     lock_release(intersectionLock);
     return;
 
@@ -248,7 +249,8 @@ intersection_after_exit(Direction origin, Direction destination)
        current -> next = next -> next;
        kfree(next);
        num_cars_in_intersection--;
-       cv_signal(intersectionCV, intersectionLock);
+       //cv_signal(intersectionCV, intersectionLock);
+       cv_broadcast(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
        return;
 
