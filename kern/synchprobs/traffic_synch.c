@@ -26,7 +26,7 @@
 static struct lock * intersectionLock;
 static struct cv * intersectionCV;
 int num_cars_in_intersection;
-enum Directions right[4] = {west, north, east, south};
+Direction right[4] = {west, north, east, south};
 
 struct car {
 
@@ -90,7 +90,7 @@ intersection_sync_cleanup(void)
 
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  KASSERT(head == NULL);
+  KASSERT(num_cars_in_intersection == 0);
   lock_destroy(intersectionLock);
   cv_destroy(intersectionCV);
   // while (head != NULL){
@@ -142,7 +142,14 @@ intersection_before_entry(Direction origin, Direction destination)
   // we need to check if all pairs meet the requirement;
 
   struct car * pair = head;
+  struct car * last;
   while (pair != NULL){
+
+    if (pair -> next == NULL){
+
+      last = pair;
+
+    }
 
     if (((pair -> origin) == origin) ||
        (((pair -> origin) == destination) && ((pair -> destination) == origin)) || 
@@ -155,22 +162,15 @@ intersection_before_entry(Direction origin, Direction destination)
 
       cv_wait(intersectionCV, intersectionLock);
       pair = head;
-      continue;
-
-    }
-
-    if (pair -> next == NULL){
-
-      pair -> next = new_in;
-      num_cars_in_intersection++;
-      lock_release(intersectionLock);
-      return;
 
     }
 
 
   }
-
+  last -> next = new_in;
+  num_cars_in_intersection++;
+  lock_release(intersectionLock);
+  return;
 
 }
 
