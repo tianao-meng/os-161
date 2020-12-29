@@ -218,9 +218,9 @@ intersection_after_exit(Direction origin, Direction destination)
   if ((current -> origin == origin) && (current -> destination == destination)){
 
     kfree(current);
-    num_cars_in_intersection--;
     kprintf("Vehicle num after sub: %d \n", num_cars_in_intersection);
     head = next;
+    num_cars_in_intersection--;
     cv_signal(intersectionCV, intersectionLock);
     lock_release(intersectionLock);
     return;
