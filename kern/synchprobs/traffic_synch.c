@@ -142,20 +142,21 @@ intersection_before_entry(Direction origin, Direction destination)
   // we need to check if all pairs meet the requirement;
 
   struct car * pair = head;
-  struct car * last;
   while (pair != NULL){
-
-    if (pair -> next == NULL){
-
-      last = pair;
-
-    }
 
     if (((pair -> origin) == origin) ||
        (((pair -> origin) == destination) && ((pair -> destination) == origin)) || 
        (((pair -> destination) != destination) && ((right[pair->origin] == pair -> destination) || (right[origin] == destination)))) {
 
 
+      if (pair -> next == NULL){
+
+        pair -> next = new_in;
+        num_cars_in_intersection++;
+        lock_release(intersectionLock);
+        return;
+
+      }
       pair = pair -> next;
 
     } else {
@@ -167,10 +168,7 @@ intersection_before_entry(Direction origin, Direction destination)
 
 
   }
-  last -> next = new_in;
-  num_cars_in_intersection++;
-  lock_release(intersectionLock);
-  return;
+
 
 }
 
