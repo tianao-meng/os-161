@@ -95,7 +95,7 @@ intersection_sync_cleanup(void)
   KASSERT(intersectionCV != NULL);
   KASSERT(head == NULL);
   lock_destroy(intersectionLock);
-  void cv_destroy(intersectionCV);
+  cv_destroy(intersectionCV);
   // while (head != NULL){
   //   car * temp = head -> next;
   //   kfree(head);
@@ -122,7 +122,7 @@ intersection_before_entry(Direction origin, Direction destination)
 {
   /* replace this default implementation with your own implementation */
 
-  car * new_in = kmalloc(sizeof(struct car));
+  struct car * new_in = kmalloc(sizeof(struct car));
   new_in -> origin = origin;
   new_in -> destination = destination;
 
@@ -141,7 +141,7 @@ intersection_before_entry(Direction origin, Direction destination)
   // if we want to add car to the list,
   // we need to check if all pairs meet the requirement;
 
-  car * pair = head;
+  struct car * pair = head;
   while (pair != NULL){
 
     if (((pair -> origin) == origin) ||
@@ -189,7 +189,7 @@ void
 intersection_after_exit(Direction origin, Direction destination) 
 {
   /* replace this default implementation with your own implementation */
-  if ((num_cars_in_intersection == 1) && ((origin ! = head -> origin) || (destination ! = head -> destination))){
+  if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
 
     panic("not exit the car that want to exit");
 
@@ -207,8 +207,8 @@ intersection_after_exit(Direction origin, Direction destination)
   }
 
   lock_acquire(intersectionLock);
-  car * current = head;
-  car * next = head -> next;
+  struct car * current = head;
+  struct car * next = head -> next;
 
   //if the head exit;
 
