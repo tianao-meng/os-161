@@ -240,5 +240,7 @@ intersection_after_exit(Direction origin, Direction destination)
 
 
   }
+  lock_release(intersectionLock);
+  panic("not exit the car that want to exit");
 
 }
