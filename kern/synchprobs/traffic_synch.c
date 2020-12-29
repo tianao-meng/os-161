@@ -166,7 +166,14 @@ intersection_before_entry(Direction origin, Direction destination)
 
       cv_wait(intersectionCV, intersectionLock);
       pair = head;
-      
+      if (head == NULL){
+        head = new_in;
+        num_cars_in_intersection++;
+        //kprintf("Vehicle num after add : %d \n", num_cars_in_intersection);
+        lock_release(intersectionLock);
+        return;
+      }
+
 
     }
 
