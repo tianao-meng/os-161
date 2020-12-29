@@ -122,6 +122,7 @@ intersection_before_entry(Direction origin, Direction destination)
   struct car * new_in = kmalloc(sizeof(struct car));
   new_in -> origin = origin;
   new_in -> destination = destination;
+  new_in -> next = NULL;
 
   //to change the critical section, i.e. the cars list, need to acquire first;
 
