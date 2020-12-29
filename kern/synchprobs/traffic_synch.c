@@ -25,7 +25,7 @@
 
 static struct lock * intersectionLock;
 static struct cv * intersectionCV;
-int num_cars_in_intersection;
+static int num_cars_in_intersection;
 Direction right[4] = {west, north, east, south};
 
 struct car {
@@ -37,7 +37,7 @@ struct car {
 };
 
 // wrapper for the car list in the intersection
-struct car * head;
+static struct car * head;
 
 
 /* 
