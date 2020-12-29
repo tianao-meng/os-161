@@ -149,14 +149,14 @@ intersection_before_entry(Direction origin, Direction destination)
        (((pair -> destination) != destination) && ((right[pair->origin] == pair -> destination) || (right[origin] == destination)))) {
 
 
-      if (pair -> next == NULL){
+      // if (pair -> next == NULL){
 
-        pair -> next = new_in;
-        num_cars_in_intersection++;
-        lock_release(intersectionLock);
-        return;
+      //   pair -> next = new_in;
+      //   num_cars_in_intersection++;
+      //   lock_release(intersectionLock);
+      //   return;
 
-      }
+      // }
       pair = pair -> next;
 
     } else {
@@ -168,6 +168,14 @@ intersection_before_entry(Direction origin, Direction destination)
 
 
   }
+  new_in -> next = head;
+  head = new_in;
+  num_cars_in_intersection++;
+  lock_release(intersectionLock);
+  return;
+
+
+
 
 
 }
