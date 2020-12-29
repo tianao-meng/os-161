@@ -131,7 +131,7 @@ intersection_before_entry(Direction origin, Direction destination)
   lock_acquire(intersectionLock);
   kprintf("Vehicle num in entry : %d \n", num_cars_in_intersection);
   // when there are no cars in the intersection, just add a car to the list;
-  if (num_cars_in_intersection == 0){
+  if (head == NULL){
     head = new_in;
     num_cars_in_intersection++;
     //kprintf("Vehicle num after add : %d \n", num_cars_in_intersection);
