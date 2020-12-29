@@ -226,13 +226,15 @@ intersection_after_exit(Direction origin, Direction destination)
 
   struct car * current = head;
   struct car * next = head -> next;
+  kprintf("next: %p \n", next);
 
   //if the head exit;
 
   if ((current -> origin == origin) && (current -> destination == destination)){
 
-    head = next;
     kfree(current);
+    head = next;
+    kprintf("free before assign get the next val: %p \n", next);
     num_cars_in_intersection--;
     cv_broadcast(intersectionCV, intersectionLock);
     //cv_signal(intersectionCV, intersectionLock);
@@ -248,6 +250,8 @@ intersection_after_exit(Direction origin, Direction destination)
        current -> next = next -> next;
        kfree(next);
        num_cars_in_intersection--;
+
+       //using cv_broadcast is faster
        cv_broadcast(intersectionCV, intersectionLock);
        //cv_signal(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
