@@ -25,7 +25,7 @@
 
 static struct lock * intersectionLock;
 static struct cv * intersectionCV;
-static int num_cars_in_intersection;
+int num_cars_in_intersection;
 Direction right[4] = {west, north, east, south};
 
 struct car {
@@ -37,7 +37,7 @@ struct car {
 };
 
 // wrapper for the car list in the intersection
-static struct car * head;
+struct car * head;
 
 
 /* 
@@ -90,7 +90,7 @@ intersection_sync_cleanup(void)
 
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  KASSERT(num_cars_in_intersection == 0);
+  //KASSERT(num_cars_in_intersection == 0);
   lock_destroy(intersectionLock);
   cv_destroy(intersectionCV);
   // while (head != NULL){
