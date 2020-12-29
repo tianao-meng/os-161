@@ -133,6 +133,7 @@ intersection_before_entry(Direction origin, Direction destination)
   if (num_cars_in_intersection == 0){
     head = new_in;
     num_cars_in_intersection++;
+    kprintf("Vehicle num after add : %d \n", num_cars_in_intersection);
     lock_release(intersectionLock);
     return;
   }
@@ -153,6 +154,7 @@ intersection_before_entry(Direction origin, Direction destination)
 
         pair -> next = new_in;
         num_cars_in_intersection++;
+        kprintf("Vehicle num after add : %d \n", num_cars_in_intersection);
         lock_release(intersectionLock);
         return;
 
@@ -189,7 +191,7 @@ intersection_after_exit(Direction origin, Direction destination)
 {
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  kprintf("Vehicle num: %d \n", num_cars_in_intersection);
+  kprintf("Vehicle num in exit: %d \n", num_cars_in_intersection);
   //KASSERT(num_cars_in_intersection != 0);
   /* replace this default implementation with your own implementation */
   if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
