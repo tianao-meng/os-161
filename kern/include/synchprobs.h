@@ -11,13 +11,6 @@ enum Directions
   };
 typedef enum Directions Direction;
 
-struct car {
-
-  Direction origin;
-  Direction destination;
-  car * next;
-
-};
 
 /* student-implemented functions for the road intersection problem */
 
