@@ -90,7 +90,7 @@ intersection_sync_cleanup(void)
 
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  //KASSERT(num_cars_in_intersection == 0);
+  KASSERT(num_cars_in_intersection == 0);
   lock_destroy(intersectionLock);
   cv_destroy(intersectionCV);
   // while (head != NULL){
@@ -166,6 +166,13 @@ intersection_before_entry(Direction origin, Direction destination)
 
       cv_wait(intersectionCV, intersectionLock);
       pair = head;
+      if (head == NULL){
+        head = new_in;
+        num_cars_in_intersection++;
+        //kprintf("Vehicle num after add : %d \n", num_cars_in_intersection);
+        lock_release(intersectionLock);
+        return;
+      }
 
     }
 
@@ -224,8 +231,8 @@ intersection_after_exit(Direction origin, Direction destination)
 
   if ((current -> origin == origin) && (current -> destination == destination)){
 
-    kfree(current);
     head = next;
+    kfree(current);
     num_cars_in_intersection--;
     cv_signal(intersectionCV, intersectionLock);
     lock_release(intersectionLock);
