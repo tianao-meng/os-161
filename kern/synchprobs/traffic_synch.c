@@ -40,9 +40,6 @@ struct car {
 struct car * head;
 
 
-
-
-
 /* 
  * The simulation driver will call this function once before starting
  * the simulation
@@ -155,6 +152,7 @@ intersection_before_entry(Direction origin, Direction destination)
 
       cv_wait(intersectionCV, intersectionLock);
       pair = head;
+      continue;
 
     }
 
@@ -233,6 +231,11 @@ intersection_after_exit(Direction origin, Direction destination)
        cv_signal(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
        return;
+    } else {
+
+      current = next;
+      next = current -> next;
+
     }
 
 
