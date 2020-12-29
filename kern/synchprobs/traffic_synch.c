@@ -21,7 +21,26 @@
 /*
  * replace this with declarations of any synchronization and other variables you need here
  */
-static struct semaphore *intersectionSem;
+//static struct semaphore *intersectionSem;
+
+static struct lock * intersectionLock;
+static struct cv * intersectionCV;
+int num_cars_in_intersection;
+Direction right[4] = {west, north, east, south};
+
+struct car {
+
+  Direction origin;
+  Direction destination;
+  car * next;
+
+};
+
+// wrapper for the car list in the intersection
+car * head;
+
+
+
 
 
 /* 
@@ -36,10 +55,25 @@ intersection_sync_init(void)
 {
   /* replace this default implementation with your own implementation */
 
-  intersectionSem = sem_create("intersectionSem",1);
-  if (intersectionSem == NULL) {
-    panic("could not create intersection semaphore");
+  // intersectionSem = sem_create("intersectionSem",1);
+  // if (intersectionSem == NULL) {
+  //   panic("could not create intersection semaphore");
+  // }
+  intersectionLock = lock_create("intersectionLock");
+
+  if (intersectionLock == NULL) {
+    panic("could not create intersection lock");
   }
+
+  intersectionCV = cv_create("intersectionCV");
+
+  if (intersectionCV == NULL) {
+    panic("could not create intersection cv");
+  }
+
+  head = NULL;
+  num_cars_in_intersection = 0;
+
   return;
 }
 
@@ -54,8 +88,19 @@ void
 intersection_sync_cleanup(void)
 {
   /* replace this default implementation with your own implementation */
-  KASSERT(intersectionSem != NULL);
-  sem_destroy(intersectionSem);
+  // KASSERT(intersectionSem != NULL);
+  // sem_destroy(intersectionSem);
+
+  KASSERT(intersectionLock != NULL);
+  KASSERT(intersectionCV != NULL);
+  KASSERT(head == NULL);
+  lock_destroy(intersectionLock);
+  void cv_destroy(intersectionCV);
+  // while (head != NULL){
+  //   car * temp = head -> next;
+  //   kfree(head);
+  //   head = temp;
+  // }
 }
 
 
@@ -76,10 +121,56 @@ void
 intersection_before_entry(Direction origin, Direction destination) 
 {
   /* replace this default implementation with your own implementation */
-  (void)origin;  /* avoid compiler complaint about unused parameter */
-  (void)destination; /* avoid compiler complaint about unused parameter */
-  KASSERT(intersectionSem != NULL);
-  P(intersectionSem);
+
+  car * new_in = kmalloc(sizeof(struct car));
+  new_in -> origin = origin;
+  new_in -> destination = destination;
+
+  //to change the critical section, i.e. the cars list, need to acquire first;
+
+  lock_acquire(intersectionLock);
+  // when there are no cars in the intersection, just add a car to the list;
+  if (num_cars_in_intersection == 0){
+    head = new_in;
+    num_cars_in_intersection++;
+    lock_release(intersectionLock);
+    return;
+  }
+
+  // when there exists cars in the intersection,
+  // if we want to add car to the list,
+  // we need to check if all pairs meet the requirement;
+
+  car * pair = head;
+  while (pair != NULL){
+
+    if (((pair -> origin) == origin) ||
+       (((pair -> origin) == destination) && ((pair -> destination) == origin)) || 
+       (((pair -> destination) != destination) && ((right[pair->origin] == pair -> destination) || (right[origin] == destination)))) {
+
+
+      pair = pair -> next;
+
+    } else {
+
+      cv_wait(intersectionCV, intersectionLock);
+      pair = head;
+
+    }
+
+    if (pair -> next == NULL){
+
+      pair -> next = new_in;
+      num_cars_in_intersection++;
+      lock_release(intersectionLock);
+      return;
+
+    }
+
+
+  }
+
+
 }
 
 
@@ -98,8 +189,53 @@ void
 intersection_after_exit(Direction origin, Direction destination) 
 {
   /* replace this default implementation with your own implementation */
-  (void)origin;  /* avoid compiler complaint about unused parameter */
-  (void)destination; /* avoid compiler complaint about unused parameter */
-  KASSERT(intersectionSem != NULL);
-  V(intersectionSem);
+  if ((num_cars_in_intersection == 1) && ((origin ! = head -> origin) || (destination ! = head -> destination))){
+
+    panic("not exit the car that want to exit");
+
+  }
+
+  lock_acquire(intersectionLock);
+  if (num_cars_in_intersection == 1) {
+
+    kfree(head);
+    num_cars_in_intersection --;
+    head = NULL;
+    lock_release(intersectionLock);
+    return;
+
+  }
+
+  lock_acquire(intersectionLock);
+  car * current = head;
+  car * next = head -> next;
+
+  //if the head exit;
+
+  if ((current -> origin == origin) && (current -> destination == destination)){
+
+    kfree(current);
+    num_cars_in_intersection--;
+    head = next;
+    cv_signal(intersectionCV, intersectionLock);
+    lock_release(intersectionLock);
+    return;
+
+  }
+
+  while (next != NULL){
+
+    if ((next -> origin == origin) && (next -> destination == destination)){
+
+       current -> next = next -> next;
+       free(next);
+       num_cars_in_intersection--;
+       cv_signal(intersectionCV, intersectionLock);
+       lock_release(intersectionLock);
+       return;
+    }
+
+
+  }
+
 }
