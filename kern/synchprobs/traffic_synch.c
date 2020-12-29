@@ -26,7 +26,7 @@
 static struct lock * intersectionLock;
 static struct cv * intersectionCV;
 int num_cars_in_intersection;
-Direction right[4] = {west, north, east, south};
+enum Directions right[4] = {west, north, east, south};
 
 struct car {
 
@@ -118,6 +118,8 @@ void
 intersection_before_entry(Direction origin, Direction destination) 
 {
   /* replace this default implementation with your own implementation */
+  KASSERT(intersectionLock != NULL);
+  KASSERT(intersectionCV != NULL);
 
   struct car * new_in = kmalloc(sizeof(struct car));
   new_in -> origin = origin;
@@ -187,6 +189,8 @@ intersection_before_entry(Direction origin, Direction destination)
 void
 intersection_after_exit(Direction origin, Direction destination) 
 {
+  KASSERT(intersectionLock != NULL);
+  KASSERT(intersectionCV != NULL);
   /* replace this default implementation with your own implementation */
   if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
 
