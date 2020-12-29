@@ -90,7 +90,7 @@ intersection_sync_cleanup(void)
 
   KASSERT(intersectionLock != NULL);
   KASSERT(intersectionCV != NULL);
-  KASSERT(num_cars_in_intersection == 0);
+  //KASSERT(num_cars_in_intersection == 0);
   lock_destroy(intersectionLock);
   cv_destroy(intersectionCV);
   // while (head != NULL){
