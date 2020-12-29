@@ -194,11 +194,7 @@ intersection_after_exit(Direction origin, Direction destination)
   //KASSERT(num_cars_in_intersection != 0);
   kprintf("Vehicle num after entry : %d \n", num_cars_in_intersection);
   /* replace this default implementation with your own implementation */
-  if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
 
-    panic("not exit the car that want to exit");
-
-  }
 
   // lock_acquire(intersectionLock);
   // if (num_cars_in_intersection == 1) {
@@ -212,6 +208,13 @@ intersection_after_exit(Direction origin, Direction destination)
   // }
 
   lock_acquire(intersectionLock);
+
+  if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
+
+    panic("not exit the car that want to exit");
+
+  }
+
   struct car * current = head;
   struct car * next = head -> next;
 
@@ -248,7 +251,7 @@ intersection_after_exit(Direction origin, Direction destination)
 
 
   }
-  kprintf("Vehicle num in exit: %d \n", num_cars_in_intersection);
+  //kprintf("Vehicle num in exit: %d \n", num_cars_in_intersection);
   lock_release(intersectionLock);
   panic("not exit the car that want to exit");
 
