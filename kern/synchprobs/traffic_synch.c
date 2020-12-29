@@ -129,7 +129,7 @@ intersection_before_entry(Direction origin, Direction destination)
   //to change the critical section, i.e. the cars list, need to acquire first;
 
   lock_acquire(intersectionLock);
-  kprintf("Vehicle num in entry : %d \n", num_cars_in_intersection);
+  //kprintf("Vehicle num in entry : %d \n", num_cars_in_intersection);
   // when there are no cars in the intersection, just add a car to the list;
   if (head == NULL){
     head = new_in;
@@ -216,7 +216,7 @@ intersection_after_exit(Direction origin, Direction destination)
   // }
 
   lock_acquire(intersectionLock);
-  kprintf("Vehicle num after entry : %d \n", num_cars_in_intersection);
+  //kprintf("Vehicle num after entry : %d \n", num_cars_in_intersection);
 
   if ((num_cars_in_intersection == 1) && ((origin != head -> origin) || (destination != head -> destination))){
 
@@ -234,7 +234,8 @@ intersection_after_exit(Direction origin, Direction destination)
     head = next;
     kfree(current);
     num_cars_in_intersection--;
-    cv_broadcast(intersectionCV, intersectionLock);
+    //cv_broadcast(intersectionCV, intersectionLock);
+    cv_signal(intersectionCV, intersectionLock);
     lock_release(intersectionLock);
     return;
 
@@ -247,7 +248,8 @@ intersection_after_exit(Direction origin, Direction destination)
        current -> next = next -> next;
        kfree(next);
        num_cars_in_intersection--;
-       cv_broadcast(intersectionCV, intersectionLock);
+       //cv_broadcast(intersectionCV, intersectionLock);
+       cv_signal(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
        return;
 
