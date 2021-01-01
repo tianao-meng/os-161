@@ -226,6 +226,7 @@ lock_release(struct lock *lock)
 {
         // Write this
     KASSERT(lock != NULL);
+    KASSERT(lock_do_i_hold(lock));
     //KASSERT(lock -> lock_holder != NULL);
     spinlock_acquire(&lock->lock_lock);
 
