@@ -237,8 +237,8 @@ intersection_after_exit(Direction origin, Direction destination)
     num_cars_in_intersection--;
 
     //borad cast is faster and robust
-    //cv_signal(intersectionCV, intersectionLock);
-    cv_broadcast(intersectionCV, intersectionLock);
+    cv_signal(intersectionCV, intersectionLock);
+    //cv_broadcast(intersectionCV, intersectionLock);
     lock_release(intersectionLock);
     return;
 
@@ -253,8 +253,8 @@ intersection_after_exit(Direction origin, Direction destination)
        num_cars_in_intersection--;
 
        //borad cast is faster and robust
-       //cv_signal(intersectionCV, intersectionLock);
-       cv_broadcast(intersectionCV, intersectionLock);
+       cv_signal(intersectionCV, intersectionLock);
+       //cv_broadcast(intersectionCV, intersectionLock);
        lock_release(intersectionLock);
        return;
 
