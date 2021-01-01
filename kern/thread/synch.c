@@ -226,7 +226,7 @@ lock_release(struct lock *lock)
 {
         // Write this
     KASSERT(lock != NULL);
-    KASSERT(lock_do_i_hold(lock));
+    KASSERT(lock_do_i_hold(lock) == true);
     //KASSERT(lock -> lock_holder != NULL);
     spinlock_acquire(&lock->lock_lock);
 
@@ -306,7 +306,7 @@ cv_wait(struct cv *cv, struct lock *lock)
     KASSERT(cv != NULL);
     KASSERT(cv -> cv_wchan != NULL);
     KASSERT(lock != NULL);
-    KASSERT(lock_do_i_hold(lock));
+    KASSERT(lock_do_i_hold(lock) == true);
 
     wchan_lock(cv->cv_wchan);
     lock_release(lock);
