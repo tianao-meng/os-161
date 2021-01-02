@@ -24,7 +24,13 @@
 //static struct semaphore *intersectionSem;
 
 static struct lock * intersectionLock;
-static struct cv * intersectionCV;
+
+// car sleep on different origin cv;
+static struct cv * north_CV;
+static struct cv * south_CV;
+static struct cv * east_CV;
+static struct cv * west_CV;
+
 int num_cars_in_intersection;
 Direction right[4] = {west, north, east, south};
 
@@ -38,6 +44,7 @@ struct car {
 
 // wrapper for the car list in the intersection
 struct car * head;
+
 
 
 /* 
@@ -62,10 +69,28 @@ intersection_sync_init(void)
     panic("could not create intersection lock");
   }
 
-  intersectionCV = cv_create("intersectionCV");
+  north_CV = cv_create("north_CV");
 
-  if (intersectionCV == NULL) {
-    panic("could not create intersection cv");
+  if (north_CV == NULL) {
+    panic("could not create north_CV");
+  }
+
+  south_CV = cv_create("south_CV");
+
+  if (south_CV == NULL) {
+    panic("could not create south_CV");
+  }
+
+  east_CV = cv_create("east_CV");
+
+  if (east_CV == NULL) {
+    panic("could not create east_CV");
+  }
+
+  west_CV = cv_create("west_CV");
+
+  if (west_CV == NULL) {
+    panic("could not create west_CV");
   }
 
   head = NULL;
@@ -89,10 +114,16 @@ intersection_sync_cleanup(void)
   // sem_destroy(intersectionSem);
 
   KASSERT(intersectionLock != NULL);
-  KASSERT(intersectionCV != NULL);
+  KASSERT(north_CV != NULL);
+  KASSERT(south_CV != NULL);
+  KASSERT(west_CV != NULL);
+  KASSERT(east_CV != NULL);
   KASSERT(num_cars_in_intersection == 0);
   lock_destroy(intersectionLock);
-  cv_destroy(intersectionCV);
+  cv_destroy(north_CV);
+  cv_destroy(south_CV);
+  cv_destroy(east_CV);
+  cv_destroy(west_CV);
   // while (head != NULL){
   //   car * temp = head -> next;
   //   kfree(head);
@@ -119,7 +150,10 @@ intersection_before_entry(Direction origin, Direction destination)
 {
   /* replace this default implementation with your own implementation */
   KASSERT(intersectionLock != NULL);
-  KASSERT(intersectionCV != NULL);
+  KASSERT(north_CV != NULL);
+  KASSERT(south_CV != NULL);
+  KASSERT(east_CV != NULL);
+  KASSERT(west_CV != NULL);
 
   struct car * new_in = kmalloc(sizeof(struct car));
   new_in -> origin = origin;
@@ -164,7 +198,24 @@ intersection_before_entry(Direction origin, Direction destination)
 
     } else {
 
-      cv_wait(intersectionCV, intersectionLock);
+      if (origin == north){
+
+        cv_wait(north_CV, intersectionLock);
+
+      } else if (origin == south){
+
+        cv_wait(south_CV, intersectionLock);
+
+      } else if (origin == east){
+
+        cv_wait(east_CV, intersectionLock);
+
+      } else {
+
+        cv_wait(west_CV, intersectionLock);
+
+      }
+      
       pair = head;
       if (head == NULL){
         head = new_in;
@@ -199,7 +250,10 @@ void
 intersection_after_exit(Direction origin, Direction destination) 
 {
   KASSERT(intersectionLock != NULL);
-  KASSERT(intersectionCV != NULL);
+  KASSERT(north_CV != NULL);
+  KASSERT(south_CV != NULL);
+  KASSERT(east_CV != NULL);
+  KASSERT(west_CV != NULL);
   KASSERT(num_cars_in_intersection != 0);
   
   /* replace this default implementation with your own implementation */
@@ -238,7 +292,25 @@ intersection_after_exit(Direction origin, Direction destination)
 
     //borad cast is faster and robust
     //cv_signal(intersectionCV, intersectionLock);
-    cv_broadcast(intersectionCV, intersectionLock);
+    
+
+    if (origin == north){
+
+      cv_broadcast(north_CV, intersectionLock);
+
+    } else if (origin == south){
+
+      cv_broadcast(south_CV, intersectionLock);
+
+    } else if (origin == east){
+
+      cv_broadcast(east_CV, intersectionLock);
+
+    } else {
+
+      cv_broadcast(west_CV, intersectionLock);
+
+    }
     lock_release(intersectionLock);
     return;
 
@@ -254,8 +326,24 @@ intersection_after_exit(Direction origin, Direction destination)
 
        //borad cast is faster and robust
        //cv_signal(intersectionCV, intersectionLock);
-       cv_broadcast(intersectionCV, intersectionLock);
-       lock_release(intersectionLock);
+      if (origin == north){
+
+        cv_broadcast(north_CV, intersectionLock);
+
+      } else if (origin == south){
+
+        cv_broadcast(south_CV, intersectionLock);
+
+      } else if (origin == east){
+
+        cv_broadcast(east_CV, intersectionLock);
+
+      } else {
+
+        cv_broadcast(west_CV, intersectionLock);
+
+      }
+      lock_release(intersectionLock);
        return;
 
     } else {
