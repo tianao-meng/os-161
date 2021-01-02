@@ -21,12 +21,7 @@ void intersection_sync_cleanup(void);
 void intersection_before_entry(Direction origin, Direction destination);
 void intersection_after_exit(Direction origin, Direction destination);
 
-// Haoda's extra asf functions 
-int dir_index(Direction d);
-//bool all_false_except(Direction d, int volatile arr[]);
-//bool left_and_right_all_false(Direction d, int volatile arr[]);
-//bool check_intersection(Direction origin, Direction destination);
-void update_flow(void);
+
 
 /* student-implemented functions for the cat/mouse problem */
 
