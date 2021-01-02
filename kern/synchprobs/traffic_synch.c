@@ -278,64 +278,188 @@
 #include <synch.h>
 #include <opt-A1.h>
 
-/*
+/* 
  * This simple default synchronization mechanism allows only vehicle at a time
  * into the intersection.   The intersectionSem is used as a a lock.
  * We use a semaphore rather than a lock so that this code will work even
  * before locks are implemented.
  */
 
-/*
+/* 
  * Replace this default synchronization mechanism with your own (better) mechanism
  * needed for your solution.   Your mechanism may use any of the available synchronzation
- * primitives, e.g., semaphores, locks, condition variables.   You are also free to
+ * primitives, e.g., semaphores, locks, condition variables.   You are also free to 
  * declare other global variables if your solution requires them.
  */
 
 /*
  * replace this with declarations of any synchronization and other variables you need here
  */
-/* static struct semaphore *intersectionSem; */
-static struct lock *curInInter;
-static struct cv *N;
-static struct cv *S;
-static struct cv *E;
-static struct cv *W;
+// static struct semaphore *intersectionSem; // WE AINT GONNA USE NO SEMAPHORES IN THIS ONE 
 
-static int interState[4];
-static int waitTimes[4];
-static int curDir = -1;
+static struct lock *mutex; 
 
-/*
+// The RULES of the ROAD 
+// If two vehicles are in the intersection simultaneously, 
+// then at least ONE of the following must be true: 
+
+// 1) V1.origin == V2.origin 
+// 2) V1.origin == V2.destination && V1.destination == V2.origin 
+// 3) V1.destination != V2.destination && ( V1 right turn || V2 right turn)
+
+// To ensure these rules of the road are being followed, 
+// we need the following boolean conditions: 
+//int volatile occupied_destinations[4]; //N:0 E:1 S:2 W:3
+//int volatile occupied_origins[4];      //N:0 E:1 S:2 W:3
+//int volatile right_turns;
+
+// New System: "One Direction"
+// condition 1 is a strong independent condition who needs no other conditions to let traffic flow efficiently
+int volatile waiting_from[4]; // N:0 E:1 S:2 W:3 
+int volatile flow_direction;  // N:0 E:1 S:2 W:3
+
+int volatile intersection_vehicles;
+
+// NEW 
+static struct cv *go[4]; //N:0 E:1 S:2 W:3
+
+/* 
  * The simulation driver will call this function once before starting
  * the simulation
  *
  * You can use it to initialize synchronization and other variables.
- *
+ * 
  */
 void
 intersection_sync_init(void)
 {
   /* replace this default implementation with your own implementation */
 
-  /* intersectionSem = sem_create("intersectionSem",1); */
-  curInInter = lock_create("curInInter");
-  if (curInInter == NULL) panic("could not create curInInter lock");
-  N = cv_create("N");
-  if (N == NULL) panic("could not create N cv");
-  S = cv_create("S");
-  if (S == NULL) panic("could not create S cv");
-  E = cv_create("E");
-  if (E == NULL) panic("could not create E cv");
-  W = cv_create("W");
-  if (W == NULL) panic("could not create W cv");
-  /* if (intersectionSem == NULL) { */
-  /*   panic("could not create intersection semaphore"); */
-  /* } */
-  return;
+  //intersectionSem = sem_create("intersectionSem",1);
+  //if (intersectionSem == NULL) {
+  //  panic("could not create intersection semaphore");
+  //}
+
+  // LOCKS
+  mutex = lock_create("mutex");
+
+  // Conditional Variables 
+  for (int i = 0; i < 4; i++)
+  {
+    go[i] = cv_create("go");
+    if (go[i] == NULL)
+      panic("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  }
+  
+  // Boolean setup 
+  flow_direction = -1; 
+  intersection_vehicles = 0;
+  for (int i = 0; i < 4; i++)
+  {
+    waiting_from[i] = 0;
+  }
+  
 }
 
+int 
+dir_index(Direction d)
+{
+  switch (d)
+    {
+    case north:
+      return 0;
+      break;
+    case east:
+      return 1;
+      break;
+    case south:
+      return 2;
+      break;
+    case west:
+      return 3;
+      break;
+    }
+  // This should never happen 
+  return 0;
+}
+
+// Haoda's DIRECTION CHECKING FUNCTIONS (USELESS IN THE ONE DIRECTION SYSTEM)
 /*
+bool 
+all_false_except(Direction d, int volatile arr[])
+{
+  int exception = dir_index(d);
+  for (int i = 0; i < 4; i++)
+  {
+    if (i != exception && arr[i] > 0)
+      return false;
+  }
+  return true;
+}
+bool 
+left_and_right_all_false(Direction d, int volatile arr[])
+{
+  int dir_i = dir_index(d);
+  for (int i = 0; i < 3; i++)
+  {
+    //
+    if (((dir_i - i != 0) || dir_i - i != 2 || dir_i - i != 2) // If direction is not parallel
+      && arr[i] > 0) // And it's true (occupied)
+      return false;
+  }
+  return true;
+}
+bool 
+check_intersection(Direction origin, Direction destination)
+{
+  // Condition 1: Are all cars entering from the same direction?
+  if (all_false_except(origin, occupied_origins))
+    return true; 
+  
+  // Condition 1|2: Are all cars going in PARALLEL directions? 
+  //               (i.e. origins and destinations are either same or opposites)
+  if (left_and_right_all_false(origin, occupied_origins) && // origins are all parallel to current origin
+    left_and_right_all_false(origin, occupied_destinations) && // dest are all parallel to current origin
+    ((dir_index(destination) - dir_index(origin) == 2) || (dir_index(destination) - dir_index(origin) == -2)))
+    return true; 
+  
+  // Condition 3: Do all cars have different destinations? 
+  if (occupied_destinations[dir_index(destination)] == false
+    // and is there a car making a right turn? 
+   && (dir_index(origin) - dir_index(destination) == 1
+   || dir_index(origin) - dir_index(destination) == -3
+   //|| right_turns > 0))
+   || intersection_vehicles - right_turns <= 0)) 
+   // For one right turn to exist between every pair of vehicles, there cannot be 2 or more vehicles without a right turn
+   // On a similar note, if you are about to enter an intersection, unless you are making a right turn, 
+   // all vehicles in the intersection must be making a right turn
+  {
+    int diff = dir_index(origin) - dir_index(destination);
+    bool isDiffDest = occupied_destinations[dir_index(destination)] == false;
+    (void) diff; (void) isDiffDest;
+    return true;
+  }
+   // If NONE of these conditions are satisfied, then you're done m8
+   return false;
+}
+*/
+
+void 
+update_flow()
+{
+  int count = 0; // Prevent infinite loops
+  do 
+  {
+    count++; // Prevent infinite loops
+    flow_direction++; 
+    if (flow_direction > 3) flow_direction = 0;
+  } while (waiting_from[flow_direction] <= 0 && count <= 16);
+  
+  if (count >= 16)
+    flow_direction = -1; // RESET the ROAD
+}
+
+/* 
  * The simulation driver will call this function once after
  * the simulation has finished
  *
@@ -346,24 +470,21 @@ void
 intersection_sync_cleanup(void)
 {
   /* replace this default implementation with your own implementation */
-  /* KASSERT(intersectionSem != NULL); */
-  KASSERT(curInInter != NULL);
-  lock_destroy(curInInter);
-  KASSERT(N != NULL);
-  cv_destroy(N);
-  KASSERT(S != NULL);
-  cv_destroy(S);
-  KASSERT(E != NULL);
-  cv_destroy(E);
-  KASSERT(W != NULL);
-  cv_destroy(W);
+  //KASSERT(intersectionSem != NULL);
+  //sem_destroy(intersectionSem);
+  
+  for (int i = 0; i < 4; i++)
+  {
+    KASSERT(go[i] != NULL);
+    cv_destroy(go[i]);
+  }
 }
 
 
 /*
  * The simulation driver will call this function each time a vehicle
  * tries to enter the intersection, before it enters.
- * This function should cause the calling simulation thread
+ * This function should cause the calling simulation thread 
  * to block until it is OK for the vehicle to enter the intersection.
  *
  * parameters:
@@ -374,56 +495,32 @@ intersection_sync_cleanup(void)
  */
 
 void
-intersection_before_entry(Direction origin, Direction destination)
+intersection_before_entry(Direction origin, Direction destination) 
 {
-  /* replace this default implementation with your own implementation */
-  /* (void)origin;  /1* avoid compiler complaint about unused parameter *1/ */
-  /* (void)destination; /1* avoid compiler complaint about unused parameter *1/ */
-  /* KASSERT(intersectionSem != NULL); */
-  /* P(intersectionSem); */
-  (void)destination;
-  /* KASSERT(curInInter != NULL); */
-  lock_acquire(curInInter);
-    if (origin == north) {
-        if((curDir != 0 && curDir != -1) || interState[1] != 0 || interState[2] != 0 || interState[3] != 0) {
-          waitTimes[0]++;
-          cv_wait(N, curInInter);
-        }
-        if (curDir == -1) curDir = 0;
-        waitTimes[0] = 0;
-        interState[0]++;
-
-    }
-    else if (origin == south) {
-        if((curDir != 1 && curDir != -1) || interState[0] != 0 || interState[2] != 0 || interState[3] != 0) {
-          waitTimes[1]++;
-          cv_wait(S, curInInter);
-        }
-        if (curDir == -1) curDir = 1;
-        waitTimes[1] = 0;
-        interState[1]++;
-    }
-    else if (origin == east) {
-        if((curDir != 2 && curDir != -1) || interState[0] != 0 || interState[1] != 0 || interState[3] != 0) {
-          waitTimes[2]++;
-          cv_wait(E, curInInter);
-        }
-        if (curDir == -1) curDir = 2;
-        waitTimes[2] = 0;
-        interState[2]++;
-    }
-    else if (origin == west) {
-        if((curDir != 3 && curDir != -1) || interState[0] != 0 || interState[1] != 0 || interState[2] != 0) {
-          waitTimes[3]++;
-          cv_wait(W, curInInter);
-        }
-        if (curDir == -1) curDir = 3;
-        waitTimes[3] = 0;
-        interState[3]++;
-    }
-  lock_release(curInInter);
+  lock_acquire(mutex);
+  int i_origin = dir_index(origin);
+  bool is_waiting = false;
+  
+  if (flow_direction == -1) // This is the FIRST CAR to enter
+  {
+    flow_direction = i_origin; 
+  }
+  
+  if (flow_direction != i_origin) // The flow direction is NOT in this car's favor
+  {
+    is_waiting = true;
+    waiting_from[i_origin]++; 
+    cv_wait(go[i_origin], mutex); 
+  }
+  
+  // At this point, go has been signaled
+  if (is_waiting)
+    waiting_from[i_origin]--;
+  intersection_vehicles++; 
+  
+  (void) destination; // Prevent stupid warnings 
+  lock_release(mutex);
 }
-
 
 /*
  * The simulation driver will call this function each time a vehicle
@@ -437,97 +534,18 @@ intersection_before_entry(Direction origin, Direction destination)
  */
 
 void
-intersection_after_exit(Direction origin, Direction destination)
+intersection_after_exit(Direction origin, Direction destination) 
 {
-  /* replace this default implementation with your own implementation */
-  /* (void)origin;  /1* avoid compiler complaint about unused parameter *1/ */
-  /* (void)destination; /1* avoid compiler complaint about unused parameter *1/ */
-  /* KASSERT(intersectionSem != NULL); */
-  /* V(intersectionSem); */
-  /* KASSERT(curInInter != NULL); */
-  (void)destination;
-  lock_acquire(curInInter);
-    if (origin == north) {
-      /* KASSERT(interState[0] > 0); */
-      interState[0]--;
-    }
-    else if (origin == south) {
-      /* KASSERT(interState[1] > 0); */
-      interState[1]--;
-    }
-    else if (origin == east) {
-      /* KASSERT(interState[2] > 0); */
-      interState[2]--;
-    }
-    else {
-      /* KASSERT(interState[3] > 0); */
-      interState[3]--;
-    }
-    /* if (waitTimes[0] == 0 && waitTimes[1] == 0 && waitTimes[2] == 0 && waitTimes[3] == 0) {} */
-    if (interState[0] == 0 && interState[1] == 0 && interState[2] == 0 && interState[3] == 0) {
-      if (waitTimes[0] == 0 && waitTimes[1] == 0 && waitTimes[2] == 0 && waitTimes[3] == 0) {
-        curDir = -1;
-        lock_release(curInInter);
-        return;
-      }
-      switch (origin) {
-        case north:
-          if (waitTimes[1] > 0) {
-            curDir = 1;
-            cv_broadcast(S, curInInter);
-          }
-          else if (waitTimes[2] > 0) {
-            curDir = 2;
-            cv_broadcast(E, curInInter);
-          }
-          else {
-            curDir = 3;
-            cv_broadcast(W, curInInter);
-          }
-          break;
-        case south:
-          if (waitTimes[2] > 0) {
-            curDir = 2;
-            cv_broadcast(E, curInInter);
-          }
-          else if (waitTimes[3] > 0) {
-            curDir = 3;
-            cv_broadcast(W, curInInter);
-          }
-          else {
-            curDir = 0;
-            cv_broadcast(N, curInInter);
-          }
-          break;
-        case east:
-          if (waitTimes[3] > 0) {
-            curDir = 3;
-            cv_broadcast(W, curInInter);
-          }
-          else if (waitTimes[0] > 0) {
-            curDir = 0;
-            cv_broadcast(N, curInInter);
-          }
-          else {
-            curDir = 1;
-            cv_broadcast(S, curInInter);
-          }
-          break;
-        case west:
-          if (waitTimes[0] > 0) {
-            curDir = 0;
-            cv_broadcast(N, curInInter);
-          }
-          else if (waitTimes[1] > 0) {
-            curDir = 1;
-            cv_broadcast(S, curInInter);
-          }
-          else {
-            curDir = 2;
-            cv_broadcast(E, curInInter);
-          }
-          break;
-        }
-    }
-  lock_release(curInInter);
+  lock_acquire(mutex);
+  intersection_vehicles--; 
+  if (intersection_vehicles == 0)
+  {
+    update_flow();
+    if (flow_direction != -1)
+      cv_broadcast(go[flow_direction], mutex);
+  }
+  
+  (void) origin; // Prevent stupid warnings
+  (void) destination;
+  lock_release(mutex);
 }
