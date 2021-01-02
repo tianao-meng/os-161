@@ -549,3 +549,7 @@ intersection_after_exit(Direction origin, Direction destination)
   (void) destination;
   lock_release(mutex);
 }
+
+
+
+
