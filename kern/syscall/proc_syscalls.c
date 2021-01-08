@@ -10,6 +10,10 @@
 #include <thread.h>
 #include <addrspace.h>
 #include <copyinout.h>
+#if OPT_A2
+#include <mips/trapframe.h>
+#include <pid.h>
+#endif
 
 
 
@@ -55,7 +59,7 @@ int sys__fork(pid_t *retval, struct trapframe *tf){
   }
   *ctf = *tf;
 
-  err = thread_fork(curthread -> t_name, child, enter_forked_process, (void *)ctf, (unsigned long)as_child);
+  err = thread_fork(curthread -> t_name, child, enter_forked_process, ctf, (unsigned long)as_child);
   if (err){
 
     proc_destroy(child);
