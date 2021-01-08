@@ -86,6 +86,7 @@ struct proc *p = curproc;
 (void)exitcode;
 #if OPT_A2
 exit(curproc -> pid, exitcode);
+curproc -> pid = NULL;
 #endif
 
 DEBUG(DB_SYSCALL,"Syscall: _exit(%d)\n",exitcode);

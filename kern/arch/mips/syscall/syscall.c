@@ -186,7 +186,7 @@ syscall(struct trapframe *tf)
  * Thus, you can trash it and do things another way if you prefer.
  */
 void
-enter_forked_process(struct trapframe * ctf, struct addrspace * as)
+enter_forked_process(void * ctf, unsigned long as)
 {
 	#if OPT_A2
 	struct trapframe tf_child;
