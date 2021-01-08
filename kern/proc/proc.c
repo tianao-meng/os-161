@@ -221,7 +221,7 @@ proc_bootstrap(void)
 
 #if OPT_A2
 	
-  proc -> pid = NULL;
+  kproc -> pid = NULL;
 
 #endif
 
