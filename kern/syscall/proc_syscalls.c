@@ -20,7 +20,7 @@
 
 #if OPT_A2
 
-int sys__fork(pid_t *retval, struct trapframe *tf){
+int sys_fork(pid_t *retval, struct trapframe *tf){
 
   struct addrspace *as_child;
   int err;
