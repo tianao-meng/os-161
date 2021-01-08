@@ -191,13 +191,13 @@ enter_forked_process(void * ctf, unsigned long as)
 	#if OPT_A2
 	struct trapframe tf_child;
 	//copy
-	tf_child = * ctf;
+	tf_child = *(struct trapframe *)ctf;
 
 	tf_child.a3 = 0;
 	tf_child.v0 = 0;
 	tf_child.tf_epc += 4;
 
-	curproc_setas(as);
+	curproc_setas((struct addrspace *)as);
 	as_activate();
 	kfree(ctf);
 	mips_usermode(tf_child);
