@@ -12,10 +12,10 @@ struct proc_id {
 	struct cv * proc_cv;
 	pid_t require;
 
-}
+};
 
 
-void pid_array_create();
+void pid_array_create(void);
 int allocate_pid(struct proc_id * parent, struct proc_id * child_return);
 int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret);
 void exit(struct proc_id * proc, int exitcode);
