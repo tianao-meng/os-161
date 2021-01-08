@@ -41,7 +41,7 @@
  * Unless you're implementing multithreaded user processes, the only
  * process that will have more than one thread is the kernel process.
  */
-
+#include "opt-A2.h"
 #include <types.h>
 #include <proc.h>
 #include <current.h>
@@ -49,7 +49,9 @@
 #include <vnode.h>
 #include <vfs.h>
 #include <synch.h>
-#include <kern/fcntl.h>  
+#include <pid.h>
+#include <kern/fcntl.h>
+
 
 /*
  * The process for the kernel; this holds all the kernel-only threads.
@@ -103,6 +105,8 @@ proc_create(const char *name)
 	proc->console = NULL;
 #endif // UW
 
+
+
 	return proc;
 }
 
@@ -123,6 +127,10 @@ proc_destroy(struct proc *proc)
 
 	KASSERT(proc != NULL);
 	KASSERT(proc != kproc);
+
+	#if OPT_A2
+	delete_pid(proc -> pid);
+	#endif
 
 	/*
 	 * We don't take p_lock in here because we must have the only
@@ -183,6 +191,8 @@ proc_destroy(struct proc *proc)
 	}
 	V(proc_count_mutex);
 #endif // UW
+
+
 	
 
 }
@@ -208,6 +218,14 @@ proc_bootstrap(void)
     panic("could not create no_proc_sem semaphore\n");
   }
 #endif // UW 
+
+#if OPT_A2
+	
+  proc -> pid = NULL;
+
+#endif
+
+
 }
 
 /*
@@ -270,6 +288,13 @@ proc_create_runprogram(const char *name)
 	proc_count++;
 	V(proc_count_mutex);
 #endif // UW
+
+#if OPT_A2
+
+	
+	allocate_pid(curproc -> pid, proc -> pid);
+
+#endif
 
 	return proc;
 }

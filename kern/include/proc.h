@@ -27,15 +27,16 @@
  * SUCH DAMAGE.
  */
 
+
 #ifndef _PROC_H_
 #define _PROC_H_
-
 /*
  * Definition of a process.
  *
  * Note: curproc is defined by <current.h>.
  */
 
+#include "opt-A2.h"
 #include <spinlock.h>
 #include <thread.h> /* required for struct threadarray */
 
@@ -68,6 +69,10 @@ struct proc {
   struct vnode *console;                /* a vnode for the console device */
 #endif
 
+#if OPT_A2
+	struct proc_id * pid;
+#endif
+
 	/* add more material here as needed */
 };
 
@@ -78,6 +83,10 @@ extern struct proc *kproc;
 #ifdef UW
 extern struct semaphore *no_proc_sem;
 #endif // UW
+
+// #if OPT_A2
+// static struct proc * proc_create(const char *name)
+// #endif
 
 /* Call once during system startup to allocate data structures. */
 void proc_bootstrap(void);
@@ -100,5 +109,5 @@ struct addrspace *curproc_getas(void);
 /* Change the address space of the current process, and return the old one. */
 struct addrspace *curproc_setas(struct addrspace *);
 
-
 #endif /* _PROC_H_ */
+

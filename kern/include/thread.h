@@ -97,6 +97,7 @@ struct thread {
 	 * Exercise for the student: why is this material per-thread
 	 * rather than per-cpu or global?
 	 */
+	
 	bool t_in_interrupt;		/* Are we in an interrupt? */
 	int t_curspl;			/* Current spl*() state */
 	int t_iplhigh_count;		/* # of times IPL has been raised */

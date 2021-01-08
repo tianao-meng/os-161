@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
+#include "opt-A2.h"
 #include <types.h>
 #include <kern/errno.h>
 #include <kern/syscall.h>
@@ -35,6 +35,7 @@
 #include <thread.h>
 #include <current.h>
 #include <syscall.h>
+
 
 
 /*
@@ -129,6 +130,14 @@ syscall(struct trapframe *tf)
 			    (int)tf->tf_a2,
 			    (pid_t *)&retval);
 	  break;
+	#if OPT_A2
+	case SYS_fork:
+	  err = sys_fork((pid_t *)&retval, tf);
+	  break;
+	
+	#endif /* OPT_A2 */
+
+
 #endif // UW
 
 	    /* Add stuff here */
@@ -177,7 +186,25 @@ syscall(struct trapframe *tf)
  * Thus, you can trash it and do things another way if you prefer.
  */
 void
-enter_forked_process(struct trapframe *tf)
+enter_forked_process(struct trapframe * ctf, struct addrspace * as)
 {
+	#if OPT_A2
+	struct trapframe tf_child;
+	//copy
+	tf_child = * ctf;
+
+	tf_child.a3 = 0;
+	tf_child.v0 = 0;
+	tf_child.tf_epc += 4;
+
+	curproc_setas(as);
+	as_activate();
+	kfree(ctf);
+	mips_usermode(tf_child);
+
+
+	#else
 	(void)tf;
+	#endif /* OPT_A2 */
+
 }
