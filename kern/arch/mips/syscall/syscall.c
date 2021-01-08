@@ -35,6 +35,9 @@
 #include <thread.h>
 #include <current.h>
 #include <syscall.h>
+#if OPT_A2
+#include <addrspace.h>
+#endif
 
 
 
@@ -194,8 +197,8 @@ enter_forked_process(void * ctf, unsigned long as)
 	//copy
 	tf_child = *(struct trapframe *)ctf;
 
-	tf_child.a3 = 0;
-	tf_child.v0 = 0;
+	tf_child.tf_a3 = 0;
+	tf_child.tf_v0 = 0;
 	tf_child.tf_epc += 4;
 
 	curproc_setas((struct addrspace *)as);
@@ -205,9 +208,6 @@ enter_forked_process(void * ctf, unsigned long as)
 
 
 	
-	
-
-
 }
 #else
 
