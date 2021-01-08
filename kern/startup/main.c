@@ -39,9 +39,6 @@
 #include <spl.h>
 #include <clock.h>
 #include <thread.h>
-#if OPT_A2
-#include<pid.h>
-#endif
 #include <proc.h>
 #include <current.h>
 #include <synch.h>
@@ -53,6 +50,9 @@
 #include <test.h>
 #include <version.h>
 #include "autoconf.h"  // for pseudoconfig
+#if OPT_A2
+#include<pid.h>
+#endif
 
 
 /*

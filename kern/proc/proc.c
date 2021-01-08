@@ -49,8 +49,8 @@
 #include <vnode.h>
 #include <vfs.h>
 #include <synch.h>
-#include <pid.h>
 #include <kern/fcntl.h>
+#include <pid.h>
 
 
 /*
