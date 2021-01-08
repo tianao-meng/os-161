@@ -55,7 +55,7 @@ int sys__fork(pid_t *retval, struct trapframe *tf){
   }
   *ctf = *tf;
 
-  err = thread_fork(curthread -> t_name, child, enter_forked_process, ctf, as_child);
+  err = thread_fork(curthread -> t_name, child, enter_forked_process, (void *)ctf, (unsigned long)as_child);
   if (err){
 
     proc_destroy(child);
