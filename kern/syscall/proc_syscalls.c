@@ -177,7 +177,7 @@ sys_waitpid(pid_t pid,
     return(result);
   }
   int exitcode = childret -> exit_code;
-  int exitstatus = _MKWAIT_EXIT(exitcode);
+  exitstatus = _MKWAIT_EXIT(exitcode);
   result = copyout((void *)&exitstatus,status,sizeof(int));
   if (result) {
     return(result);
