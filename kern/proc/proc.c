@@ -43,15 +43,15 @@
  */
 #include "opt-A2.h"
 #include <types.h>
+#if OPT_A2
+#include<pid.h>
+#endif
 #include <proc.h>
 #include <current.h>
 #include <addrspace.h>
 #include <vnode.h>
 #include <vfs.h>
 #include <synch.h>
-#if OPT_A2
-#include<pid.h>
-#endif
 #include <kern/fcntl.h>
 
 

@@ -36,12 +36,12 @@
 #include <kern/reboot.h>
 #include <kern/unistd.h>
 #include <lib.h>
-#include <spl.h>
-#include <clock.h>
-#include <thread.h>
 #if OPT_A2
 #include<pid.h>
 #endif
+#include <spl.h>
+#include <clock.h>
+#include <thread.h>
 #include <proc.h>
 #include <current.h>
 #include <synch.h>
