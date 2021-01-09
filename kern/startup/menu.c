@@ -284,6 +284,7 @@ cmd_dth()
 	return 0;
 }
 
+#if OPT_A2
 static
 int
 cmd_sys()
@@ -294,6 +295,7 @@ cmd_sys()
 	dbflags = DB_SYSCALL;
 	return 0;
 }
+#endif
 
 /*
  * Command for shutting down.
@@ -459,7 +461,9 @@ static const char *opsmenu[] = {
 	"[sync]    Sync filesystems          ",
 	"[panic]   Intentional panic         ",
     "[dth]   Enable DB_THREADS debuging messages",
+    #if OPT_A2
     "[sys]   Enable DB_SYSCALL debuging messages",
+    #endif
 	"[q]       Quit and shut down        ",
 	NULL
 };
