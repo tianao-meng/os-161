@@ -284,6 +284,17 @@ cmd_dth()
 	return 0;
 }
 
+static
+int
+cmd_sys()
+{
+	// (void)nargs;
+	// (void)args;
+	
+	dbflags = DB_SYSCALL;
+	return 0;
+}
+
 /*
  * Command for shutting down.
  */
@@ -559,6 +570,7 @@ static struct {
 	{ "sync",	cmd_sync },
 	{ "panic",	cmd_panic },
 	{ "dth", cmd_dth },
+	{ "sys", cmd_sys },
 	{ "q",		cmd_quit },
 	{ "exit",	cmd_quit },
 	{ "halt",	cmd_quit },
