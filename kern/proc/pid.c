@@ -127,14 +127,14 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 	child_return -> pid = next_available_pid;
 	if (parent == NULL){
 		child_return -> parent = NULL;
-		child_return -> proc_cv = cv_create(curproc -> name);
+		child_return -> proc_cv = cv_create(curproc -> p_name);
 		child_return -> exit_code = -1;
 		child_return -> require = 0;
 	} else {
 
 		child_return -> parent = parent;
 		//for wait pid
-		child_return -> proc_cv = cv_create(curproc -> name);
+		child_return -> proc_cv = cv_create(curproc -> p_name);
 		child_return -> exit_code = -1;
 		child_return -> require = 0;
 
