@@ -214,7 +214,7 @@ mips_trap(struct trapframe *tf)
 
 	/* Syscall? Call the syscall handler and return. */
 	if (code == EX_SYS) {
-		kprintf("i am in mips_trap ex_sys");
+
 		/* Interrupts should have been on while in user mode. */
 		KASSERT(curthread->t_curspl == 0);
 		KASSERT(curthread->t_iplhigh_count == 0);
@@ -420,6 +420,7 @@ void
 enter_new_process(int argc, userptr_t argv, vaddr_t stack, vaddr_t entry)
 {
 	struct trapframe tf;
+	kprintf("i am in enter new process");
 
 	bzero(&tf, sizeof(tf));
 
