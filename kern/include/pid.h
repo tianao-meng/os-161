@@ -1,8 +1,10 @@
-
+#if OPT_A2
 #ifndef _PID_H_
 #define _PID_H_
-#if OPT_A2
+
 #include "opt-A2.h"
+#include <lib.h>
+#include <synch.h>
 
 struct proc_id {
 
@@ -21,6 +23,6 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret);
 void exit(struct proc_id * proc, int exitcode);
 void delete_pid(struct proc_id * proc);
 
-#endif 
 #endif /* _PID_H_ */
+#endif 
 	
