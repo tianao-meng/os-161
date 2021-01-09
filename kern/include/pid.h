@@ -19,7 +19,7 @@ struct proc_id {
 
 
 void pid_array_create(void);
-int allocate_pid(struct proc_id * parent, struct proc_id * child_return);
+void allocate_pid(struct proc_id * parent, struct proc_id * child_return);
 int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret);
 void exit(struct proc_id * proc, int exitcode);
 void delete_pid(struct proc_id * proc);
