@@ -420,7 +420,7 @@ void
 enter_new_process(int argc, userptr_t argv, vaddr_t stack, vaddr_t entry)
 {
 	struct trapframe tf;
-	kprintf("i am in enter new process");
+	//kprintf("i am in enter new process");
 
 	bzero(&tf, sizeof(tf));
 
