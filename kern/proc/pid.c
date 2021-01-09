@@ -102,7 +102,7 @@ int find_available_pos(void){
 }
 
 
-void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
+int allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 	lock_acquire(pid_lock);
 
@@ -117,6 +117,11 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 	pid_t next_available_pid = pos + 2;
 	child_return = kmalloc(sizeof(struct proc_id));
+	if (child_return == NULL){
+
+		panic("out of memory to create pid");
+
+	}
 	child_return -> pid = next_available_pid;
 	if (parent == NULL){
 		child_return -> parent = NULL;
@@ -231,31 +236,34 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 		if (check_if_in_buffer(child -> pid)){
 
 
-			
-			if (pid_exit_buffer[i] -> pid == child -> pid){
+			for (int i = 0; i < max_num; i++){
+				if (pid_exit_buffer[i] -> pid == child -> pid){
 
-				*childret = *child;
+					*childret = *child;
 
-				//safe to exit
-				for (int j = 0; j < max_num; j++){
+					//safe to exit
+					for (int j = 0; j < max_num; j++){
 
-					if (pid_exit_buffer[i] -> parent -> pid == child -> pid){
+						if (pid_exit_buffer[i] -> parent -> pid == child -> pid){
 
-						cv_destroy(pid_exit_buffer[i] -> proc_cv);
-						kfree(pid_exit_buffer[i]);
-						pid_exit_buffer[i] = NULL;
+							cv_destroy(pid_exit_buffer[i] -> proc_cv);
+							kfree(pid_exit_buffer[i]);
+							pid_exit_buffer[i] = NULL;
+
+						}
 
 					}
 
+					cv_destroy(child -> proc_cv);
+					kfree(child);
+					pid_exit_buffer[i] = NULL;
+					lock_release(pid_lock);
+					return 0;
+
 				}
 
-				cv_destroy(child -> proc_cv);
-				kfree(child);
-				pid_exit_buffer[i] = NULL;
-				lock_release(pid_lock);
-				return 0;
-
 			}
+
 
 
 
@@ -264,6 +272,8 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 
 
 	}
+	err = ESRCH;
+	return err;
 
 
 
