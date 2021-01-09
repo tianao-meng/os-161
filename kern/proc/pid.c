@@ -33,7 +33,7 @@ struct proc_id * pid_exit_buffer[max_num];
 
 void pid_array_create(void) {
 
-	kprintf("i am in pid create");
+	//kprintf("i am in pid create");
 
 	for (int i = 0; i < max_num; i++){
 

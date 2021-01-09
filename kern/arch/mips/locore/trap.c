@@ -308,6 +308,8 @@ mips_trap(struct trapframe *tf)
 	 * Really fatal kernel-mode fault.
 	 */
 
+	kprintf("i am at before panic \n");
+
 	kprintf("panic: Fatal exception %u (%s) in kernel mode\n", code,
 		trapcodenames[code]);
 	kprintf("panic: EPC 0x%x, exception vaddr 0x%x\n", 
