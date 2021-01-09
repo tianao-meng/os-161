@@ -49,7 +49,9 @@
 #include <vnode.h>
 #include <vfs.h>
 #include <synch.h>
-#include <pid.h>
+#if OPT_A2
+#include<pid.h>
+#endif
 #include <kern/fcntl.h>
 
 

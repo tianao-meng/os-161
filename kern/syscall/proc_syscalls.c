@@ -10,10 +10,10 @@
 #include <thread.h>
 #include <addrspace.h>
 #include <copyinout.h>
-#if OPT_A2
+
 #include <mips/trapframe.h>
 #include <pid.h>
-#endif
+
 
 
 
