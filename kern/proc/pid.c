@@ -12,6 +12,16 @@
 #include <synch.h>
 #include <pid.h>
 
+struct proc_id {
+
+	pid_t pid;
+	struct proc_id * parent;
+	int exit_code;
+	struct cv * proc_cv;
+	pid_t require;
+
+};
+
 
 
 
@@ -92,7 +102,7 @@ int find_available_pos(void){
 
 	for (int i = 0; i < max_num; i++){
 
-		if (pid_array[i] == NULL) && (!check_if_in_buffer(i+2)){
+		if ((pid_array[i] == NULL) && (!check_if_in_buffer(i+2))){
 			return i;
 		}
 
