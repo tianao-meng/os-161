@@ -284,7 +284,7 @@ void exit(struct proc_id * proc, int exitcode){
 
 
 	proc -> exit_code = exitcode;
-	pid_t pid = proc -> pid;
+	//pid_t pid = proc -> pid;
 
 	lock_acquire(pid_lock);
 	if (proc -> parent -> require == proc -> pid){
@@ -300,7 +300,7 @@ void exit(struct proc_id * proc, int exitcode){
 			for (int i = 0; i < max_num; i++){
 
 				if (pid_exit_buffer[i] == NULL){
-					pid_exit_buffer = proc;
+					pid_exit_buffer[i] = proc;
 					
 					
 
@@ -345,7 +345,7 @@ void exit(struct proc_id * proc, int exitcode){
 
 }
 
-void delete_pid(proc_id * proc) {
+void delete_pid(struct proc_id * proc) {
 
 	if (proc = NULL) {
 		return;
