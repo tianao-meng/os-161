@@ -7,6 +7,7 @@
 #include <kern/errno.h>
 #include <limits.h>
 #include <pid.h>
+#include <proc.h>
 #include <kern/wait.h>
 #include <lib.h>
 #include <current.h>
