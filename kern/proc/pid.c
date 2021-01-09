@@ -6,22 +6,11 @@
 #include <types.h>
 #include <kern/errno.h>
 #include <limits.h>
+#include <pid.h>
 #include <kern/wait.h>
 #include <lib.h>
 #include <current.h>
 #include <synch.h>
-#include <pid.h>
-
-struct proc_id {
-
-	pid_t pid;
-	struct proc_id * parent;
-	int exit_code;
-	struct cv * proc_cv;
-	pid_t require;
-
-};
-
 
 
 
