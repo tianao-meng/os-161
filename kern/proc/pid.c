@@ -17,8 +17,8 @@
 //PID_MIN = 2; signed i32; only for user program
 //for kernel program, i will assigned the kernel program to 1;
 
-int max_num = PID_MAX - PID_MIN + 1;
-
+//int max_num = PID_MAX - PID_MIN + 1;
+#define max_num PID_MAX - PID_MIN + 1
 //global
 struct proc_id * pid_array[max_num];
 
