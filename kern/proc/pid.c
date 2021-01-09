@@ -1,7 +1,8 @@
 
-#if OPT_A2
+
 
 #include "opt-A2.h"
+#if OPT_A2
 #include <types.h>
 #include <errno.h>
 #include <limits.h>

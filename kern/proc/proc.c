@@ -43,6 +43,9 @@
  */
 #include "opt-A2.h"
 #include <types.h>
+#if OPT_A2
+#include<pid.h>
+#endif
 #include <proc.h>
 #include <current.h>
 #include <addrspace.h>
@@ -50,9 +53,6 @@
 #include <vfs.h>
 #include <synch.h>
 #include <kern/fcntl.h>
-
-#include<pid.h>
-
 
 
 /*

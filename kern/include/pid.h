@@ -1,8 +1,9 @@
-#if OPT_A2
+
 #ifndef _PID_H_
 #define _PID_H_
 
 #include "opt-A2.h"
+#if OPT_A2
 #include <lib.h>
 #include <synch.h>
 
