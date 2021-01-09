@@ -31,14 +31,15 @@
 #include <kern/errno.h>
 #include <kern/syscall.h>
 #include <lib.h>
-#include <mips/trapframe.h>
-#include <thread.h>
-#include <current.h>
-#include <syscall.h>
 #if OPT_A2
 #include <proc.h>
 #include <addrspace.h>
 #endif
+#include <mips/trapframe.h>
+#include <thread.h>
+#include <current.h>
+#include <syscall.h>
+
 
 
 
