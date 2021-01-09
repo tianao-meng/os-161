@@ -575,7 +575,9 @@ static struct {
 	{ "sync",	cmd_sync },
 	{ "panic",	cmd_panic },
 	{ "dth", cmd_dth },
+	#if OPT_A2
 	{ "sys", cmd_sys },
+	#endif
 	{ "q",		cmd_quit },
 	{ "exit",	cmd_quit },
 	{ "halt",	cmd_quit },
