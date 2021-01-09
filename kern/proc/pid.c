@@ -4,7 +4,7 @@
 #include "opt-A2.h"
 #if OPT_A2
 #include <types.h>
-#include <errno.h>
+#include <kern/errno.h>
 #include <limits.h>
 #include <kern/wait.h>
 #include <lib.h>
