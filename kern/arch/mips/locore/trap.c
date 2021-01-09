@@ -142,6 +142,8 @@ mips_trap(struct trapframe *tf)
 	//kprintf("code : %d", code);
 	KASSERT(code < NTRAPCODES);
 
+	kprintf("i am at before panic \n");
+
 	/* Make sure we haven't run off our stack */
 	if (curthread != NULL && curthread->t_stack != NULL) {
 		KASSERT((vaddr_t)tf > (vaddr_t)curthread->t_stack);
