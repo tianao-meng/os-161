@@ -350,7 +350,7 @@ void exit(struct proc_id * proc, int exitcode){
 
 void delete_pid(struct proc_id * proc) {
 
-	if (proc = NULL) {
+	if (proc == NULL) {
 		return;
 	} else {
 
