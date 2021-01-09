@@ -139,7 +139,7 @@ mips_trap(struct trapframe *tf)
 	code = (tf->tf_cause & CCA_CODE) >> CCA_CODESHIFT;
 	isutlb = (tf->tf_cause & CCA_UTLB) != 0;
 	iskern = (tf->tf_status & CST_KUp) == 0;
-	kprintf("code : %d", code);
+	//kprintf("code : %d", code);
 	KASSERT(code < NTRAPCODES);
 
 	/* Make sure we haven't run off our stack */
@@ -214,6 +214,7 @@ mips_trap(struct trapframe *tf)
 
 	/* Syscall? Call the syscall handler and return. */
 	if (code == EX_SYS) {
+		kprintf("i am in mips_trap ex_sys");
 		/* Interrupts should have been on while in user mode. */
 		KASSERT(curthread->t_curspl == 0);
 		KASSERT(curthread->t_iplhigh_count == 0);
