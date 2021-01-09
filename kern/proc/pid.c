@@ -111,6 +111,7 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 		child_return = kmalloc(sizeof(struct proc_id));
 		child_return -> pid = -1;
+		return;
 
 		
 	}
