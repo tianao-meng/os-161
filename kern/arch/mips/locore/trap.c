@@ -125,6 +125,7 @@ kill_curthread(vaddr_t epc, unsigned code, vaddr_t vaddr)
 void
 mips_trap(struct trapframe *tf)
 {
+	DEBUG(DB_SYSCALL,"i am in mips_trap");
 	uint32_t code;
 	bool isutlb, iskern;
 	int spl;
