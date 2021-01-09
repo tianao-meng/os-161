@@ -139,7 +139,7 @@ mips_trap(struct trapframe *tf)
 	code = (tf->tf_cause & CCA_CODE) >> CCA_CODESHIFT;
 	isutlb = (tf->tf_cause & CCA_UTLB) != 0;
 	iskern = (tf->tf_status & CST_KUp) == 0;
-	DEBUG(DB_THREADS,"code: %d", code);
+	kprintf("code : %d", code);
 	KASSERT(code < NTRAPCODES);
 
 	/* Make sure we haven't run off our stack */
