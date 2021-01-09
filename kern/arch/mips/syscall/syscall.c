@@ -36,6 +36,7 @@
 #include <current.h>
 #include <syscall.h>
 #if OPT_A2
+#include <proc.h>
 #include <addrspace.h>
 #endif
 
@@ -204,7 +205,7 @@ enter_forked_process(void * ctf, unsigned long as)
 	curproc_setas((struct addrspace *)as);
 	as_activate();
 	kfree(ctf);
-	mips_usermode(tf_child);
+	mips_usermode(&tf_child);
 
 
 	
