@@ -54,7 +54,7 @@
 int
 runprogram(char *progname)
 {	
-	panic("i am in runprogram");
+	//panic("i am in runprogram");
 	struct addrspace *as;
 	struct vnode *v;
 	vaddr_t entrypoint, stackptr;
