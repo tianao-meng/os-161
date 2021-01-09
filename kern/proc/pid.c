@@ -209,7 +209,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 
 		parent -> require = child_pid;
 
-		cv_wait(proc_cv, pid_lock);
+		cv_wait(parent -> proc_cv, pid_lock);
 
 		for (int i = 0; i < max_num; i++){
 
