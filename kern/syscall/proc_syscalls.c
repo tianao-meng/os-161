@@ -4,20 +4,16 @@
 #include <kern/unistd.h>
 #include <kern/wait.h>
 #include <lib.h>
-#if OPT_A2
-#include <pid.h>
-#endif
+
 #include <syscall.h>
 #include <current.h>
 #include <proc.h>
-#if OPT_A2
-#include <mips/trapframe.h>
-#endif
+
 #include <thread.h>
 #include <addrspace.h>
 #include <copyinout.h>
-
-
+#include <mips/trapframe.h>
+#include <pid.h>
 
 
 
