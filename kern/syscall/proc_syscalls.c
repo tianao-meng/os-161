@@ -179,12 +179,14 @@ sys_waitpid(pid_t pid,
   //struct proc_id * childret = kmalloc(sizeof(struct proc_id));
   struct proc_id * childret;
   result = wait(curproc -> pid, pid, &childret);
-  kprintf("return pid: %d", childret -> pid);
+  
   if (result) {
     //cv_destroy(childret -> proc_cv);
     //kfree(childret);
     return(result);
   }
+
+  kprintf("return pid: %d", childret -> pid);
   int exitcode = childret -> exit_code;
 
   //cv_destroy(childret -> proc_cv);
