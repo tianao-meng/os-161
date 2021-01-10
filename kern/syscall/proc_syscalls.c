@@ -25,6 +25,8 @@
 
 int sys_fork(pid_t *retval, struct trapframe *tf){
 
+  kprintf("i am in sys_fork");
+
   struct addrspace *as_child;
   int err;
   struct proc * child = proc_create_runprogram(curproc -> p_name);
