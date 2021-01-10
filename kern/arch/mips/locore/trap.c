@@ -245,6 +245,7 @@ mips_trap(struct trapframe *tf)
 		}
 		break;
 	case EX_TLBS:
+		kprintf("i am in TLB");
 		if (vm_fault(VM_FAULT_WRITE, tf->tf_vaddr)==0) {
 			goto done;
 		}
