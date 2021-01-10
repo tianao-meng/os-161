@@ -234,6 +234,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 
 		cv_wait(parent -> proc_cv, pid_lock);
 
+		//parent -> require = 0;
 		for (int i = 0; i < max_num; i++){
 
 			if (pid_array[i] != NULL){
@@ -334,10 +335,9 @@ void exit(struct proc_id * proc, int exitcode){
 			for (int i = 0; i < max_num; i++){
 
 				if (pid_exit_buffer[i] == NULL){
+					
 					pid_exit_buffer[i] = proc;
 					
-					
-
 				}
 			}
 
