@@ -303,7 +303,7 @@ void exit(struct proc_id * proc, int exitcode){
 	//pid_t pid = proc -> pid;
 
 	lock_acquire(pid_lock);
-	if (proc -> parent -> require == proc -> pid){
+	if ((proc -> parent != NULL) && (proc -> parent -> require == proc -> pid)){
 		
 		proc -> parent -> require = 0;
 		cv_signal(proc -> parent -> proc_cv, pid_lock);
