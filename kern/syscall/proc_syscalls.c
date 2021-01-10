@@ -176,14 +176,16 @@ sys_waitpid(pid_t pid,
   }
   #if OPT_A2
 
-  struct proc_id * childret = kmalloc(sizeof(struct proc_id));
+  //struct proc_id * childret = kmalloc(sizeof(struct proc_id));
+  struct proc_id * childret;
   result = wait(curproc -> pid, pid, childret);
+  kprintf("return pid: %d", childret -> pid);
   if (result) {
     kfree(childret);
     return(result);
   }
   int exitcode = childret -> exit_code;
-  kfree(childret);
+  //kfree(childret);
   exitstatus = _MKWAIT_EXIT(exitcode);
   result = copyout((void *)&exitstatus,status,sizeof(int));
   if (result) {
