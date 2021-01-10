@@ -273,11 +273,12 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 					for (int j = 0; j < max_num; j++){
 
 						if (pid_exit_buffer[i] != NULL){
-							if (pid_exit_buffer[i] -> parent -> pid == child -> pid){
+							if (pid_exit_buffer[i] -> pid == child -> pid){
 
 								cv_destroy(pid_exit_buffer[i] -> proc_cv);
 								kfree(pid_exit_buffer[i]);
 								pid_exit_buffer[i] = NULL;
+								break;
 
 							}							
 						}
@@ -286,9 +287,9 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 
 					}
 
-					cv_destroy(child -> proc_cv);
-					kfree(child);
-					pid_exit_buffer[i] = NULL;
+					// cv_destroy(child -> proc_cv);
+					// kfree(child);
+					// pid_exit_buffer[i] = NULL;
 					lock_release(pid_lock);
 					return 0;
 
