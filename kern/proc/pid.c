@@ -325,10 +325,14 @@ void exit(struct proc_id * proc, int exitcode){
 
 			for (int i = 0; i < max_num; i++){
 
-				if (pid_array[i] -> pid == proc -> pid){
+				if (pid_array[i] != NULL){
+					if (pid_array[i] -> pid == proc -> pid){
 
-						pid_array[i] = NULL;
-					}
+							pid_array[i] = NULL;
+						}					
+				}
+
+
 
 			}
 
