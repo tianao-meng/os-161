@@ -64,9 +64,14 @@ bool check_if_in_buffer(pid_t pid){
 
 	for (int i = 0; i < max_num; i++){
 
-		if (pid == pid_exit_buffer[i] -> pid){
-			return true;
+		if (pid_exit_buffer[i] != NULL){
+
+			if (pid == pid_exit_buffer[i] -> pid){
+				return true;
+			}
+
 		}
+
 
 	}
 
