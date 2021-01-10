@@ -293,7 +293,7 @@ proc_create_runprogram(const char *name)
 
 #if OPT_A2
 
-	
+	proc -> pid = kmalloc(sizeof(struct proc_id));
 	allocate_pid(curproc -> pid, proc -> pid);
 
 #endif

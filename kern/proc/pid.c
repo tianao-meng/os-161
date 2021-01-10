@@ -84,9 +84,15 @@ bool check_if_in_pid_array(struct proc_id * proc){
 
 	for (int i = 0; i < max_num; i++){
 
-		if (proc -> pid == pid_array[i] -> pid){
-			return true;
+		if (pid_array[i] != NULL){
+
+			if (proc -> pid == pid_array[i] -> pid){
+				return true;
+			}
+
 		}
+
+
 
 	}
 
@@ -117,7 +123,7 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 	if (pos == -1){
 
-		child_return = kmalloc(sizeof(struct proc_id));
+		//child_return = kmalloc(sizeof(struct proc_id));
 		child_return -> pid = -1;
 		return;
 
@@ -125,7 +131,7 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 	}
 
 	pid_t next_available_pid = pos + 2;
-	child_return = kmalloc(sizeof(struct proc_id));
+	//child_return = kmalloc(sizeof(struct proc_id));
 	if (child_return == NULL){
 
 		panic("out of memory to create pid");
