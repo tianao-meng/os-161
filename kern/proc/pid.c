@@ -373,12 +373,17 @@ void delete_pid(struct proc_id * proc) {
 
 		for (int i = 0; i < max_num; i++){
 
-			if (pid_array[i] -> pid == proc -> pid){
+			if (pid_array[i] != NULL){
+				if (pid_array[i] -> pid == proc -> pid){
 
-				pid_array[i] = NULL;
-				break;
+					pid_array[i] = NULL;
+					break;
+
+				}
 
 			}
+
+
 
 		}
 		cv_destroy(proc -> proc_cv);
