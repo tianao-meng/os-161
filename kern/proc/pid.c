@@ -181,9 +181,13 @@ struct proc_id * get_proc_pid_inbuffer(pid_t pid){
 
 	for (int i = 0; i < max_num; i++){
 
-		if (pid == pid_exit_buffer[i] -> pid){
-			return pid_exit_buffer[i];
+		if (pid_exit_buffer[i] != NULL){
+			if (pid == pid_exit_buffer[i] -> pid){
+				return pid_exit_buffer[i];
+			}
 		}
+
+
 
 	}
 
@@ -232,16 +236,22 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 
 		for (int i = 0; i < max_num; i++){
 
-			if (pid_array[i] -> pid == child -> pid){
+			if (pid_array[i] != NULL){
 
-				*childret = *child;
+				if (pid_array[i] -> pid == child -> pid){
 
-				cv_destroy(child -> proc_cv);
-				kfree(child);
-				pid_array[i] = NULL;
-				break;
+					*childret = *child;
+
+					cv_destroy(child -> proc_cv);
+					kfree(child);
+					pid_array[i] = NULL;
+					break;
+
+				}
 
 			}
+
+
 
 		}
 
@@ -262,13 +272,17 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id * childret){
 					//safe to exit
 					for (int j = 0; j < max_num; j++){
 
-						if (pid_exit_buffer[i] -> parent -> pid == child -> pid){
+						if (pid_exit_buffer[i] != NULL){
+							if (pid_exit_buffer[i] -> parent -> pid == child -> pid){
 
-							cv_destroy(pid_exit_buffer[i] -> proc_cv);
-							kfree(pid_exit_buffer[i]);
-							pid_exit_buffer[i] = NULL;
+								cv_destroy(pid_exit_buffer[i] -> proc_cv);
+								kfree(pid_exit_buffer[i]);
+								pid_exit_buffer[i] = NULL;
 
+							}							
 						}
+
+
 
 					}
 
