@@ -163,9 +163,12 @@ struct proc_id * get_proc_pid(pid_t pid){
 
 	for (int i = 0; i < max_num; i++){
 
-		if (pid == pid_array[i] -> pid){
-			return pid_array[i];
+		if (pid_array[i] != NULL){
+			if (pid == pid_array[i] -> pid){
+				return pid_array[i];
+			}			
 		}
+
 
 	}
 
