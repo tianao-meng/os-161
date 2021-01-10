@@ -212,6 +212,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id ** childret){
 		if (child == NULL){
 
 			err = ESRCH;
+			lock_release(pid_lock);
 			return err;
 
 		}
@@ -223,6 +224,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id ** childret){
 	if (child -> parent != parent){
 
 		err = ECHILD;
+		lock_release(pid_lock);
 		return err;
 
 	}
