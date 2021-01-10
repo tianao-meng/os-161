@@ -93,7 +93,6 @@ syscall(struct trapframe *tf)
 	KASSERT(curthread->t_iplhigh_count == 0);
 
 	callno = tf->tf_v0;
-
 	/*
 	 * Initialize retval to 0. Many of the system calls don't
 	 * really return a value, just 0 for success and -1 on
@@ -107,7 +106,7 @@ syscall(struct trapframe *tf)
 
 	switch (callno) {
 
-		kprintf("callno: %d ", callno);
+
 	    case SYS_reboot:
 		err = sys_reboot(tf->tf_a0);
 		break;
