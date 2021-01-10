@@ -27,6 +27,7 @@ dofork(int childnum)
 {
   pid_t pid;
   pid = fork();
+  printf("pid : %d \n", pid);
   if (pid < 0) {
     errx(1,"fork %d",childnum);
   }
@@ -70,15 +71,15 @@ main(int argc, char *argv[])
   putchar('P');
   putchar('\n');
   pid1 = dofork(1);
-  printf("pid1 : %d\n", pid1);
+  //printf("pid1 : %d\n", pid1);
   putchar('P');
   putchar('\n');
   pid2 = dofork(2);
-  printf("pid2 : %d\n", pid2);
+  //printf("pid2 : %d\n", pid2);
   putchar('P');
   putchar('\n');
   pid3 = dofork(3);
-  printf("pid3 : %d\n", pid3);
+  //printf("pid3 : %d\n", pid3);
   dowait(pid1,1);
   dowait(pid2,2);
   dowait(pid3,3);
