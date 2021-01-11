@@ -75,7 +75,7 @@ main(int argc, char *argv[])
   putchar('P');
   putchar('\n');
   pid1 = dofork(1);
-  DEBUG(MY,"i am in myself debug mode\n");
+  //DEBUG(MY,"i am in myself debug mode\n");
   //printf("pid1 : %d\n", pid1);
   putchar('P');
   putchar('\n');
