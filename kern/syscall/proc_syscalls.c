@@ -25,6 +25,7 @@
 
 int sys_fork(pid_t *retval, struct trapframe *tf){
 
+  DEBUG(MY,"i am in myself debug mode\n");
   //kprintf("i am in sys_fork");
 
   struct addrspace *as_child;
@@ -97,7 +98,6 @@ struct proc *p = curproc;
 #if OPT_A2
 exit(curproc -> pid, exitcode);
 curproc -> pid = NULL;
-DEBUG(MY,"i am in myself debug mode\n");
 
 #endif
 
