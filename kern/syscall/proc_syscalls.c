@@ -90,8 +90,6 @@ void sys__exit(int exitcode) {
 
 struct addrspace *as;
 struct proc *p = curproc;
-kprintf("p : %p\n", p);
-kprintf("curproc 1: %p\n", curproc);
 
 /* for now, just include this to keep the compiler from complaining about
    an unused variable */
@@ -99,14 +97,14 @@ kprintf("curproc 1: %p\n", curproc);
 #if OPT_A2
 exit(curproc -> pid, exitcode);
 curproc -> pid = NULL;
-kprintf("curproc 2: %p\n", curproc);
+
 #endif
 
 DEBUG(DB_SYSCALL,"Syscall: _exit(%d)\n",exitcode);
 
 KASSERT(curproc->p_addrspace != NULL);
 as_deactivate();
-kprintf("curproc 3: %p\n", curproc);
+
 /*
  * clear p_addrspace before calling as_destroy. Otherwise if
  * as_destroy sleeps (which is quite possible) when we
@@ -115,13 +113,13 @@ kprintf("curproc 3: %p\n", curproc);
  * messily fatal.
  */
 as = curproc_setas(NULL);
-kprintf("curproc 4: %p\n", curproc);
+
 as_destroy(as);
-kprintf("curproc 5: %p\n", curproc);
+
 /* detach this thread from its process */
 /* note: curproc cannot be used after this call */
 proc_remthread(curthread);
-kprintf("curproc 6: %p\n", curproc);
+
 /* if this is the last user process in the system, proc_destroy()
    will wake up the kernel menu thread */
 proc_destroy(p);
