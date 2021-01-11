@@ -271,7 +271,7 @@ int wait(struct proc_id * parent, pid_t child_pid, int * childret){
 			for (int i = 0; i < max_num; i++){
 				if ((pid_exit_buffer[i] != NULL) && (pid_exit_buffer[i] -> pid == child -> pid)){
 
-					*childret = child -> child_pid;
+					*childret = child -> exit_code;
 
 					//safe to exit
 					for (int j = 0; j < max_num; j++){
