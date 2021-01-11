@@ -368,6 +368,7 @@ void exit(struct proc_id * proc, int exitcode){
 					if (pid_array[i] -> pid == proc -> pid){
 
 							pid_array[i] = NULL;
+							break;
 						}				
 				}
 
