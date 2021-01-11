@@ -126,8 +126,8 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 		if (pid_exit_buffer[i] -> parent = NULL){
 
-			cv_destroy(child -> proc_cv);
-			kfree(child);
+			cv_destroy(pid_exit_buffer[i] -> proc_cv);
+			kfree(pid_exit_buffer[i]);
 			pid_exit_buffer[i] = NULL;
 			
 		}
