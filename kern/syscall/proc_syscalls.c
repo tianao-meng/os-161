@@ -177,8 +177,8 @@ sys_waitpid(pid_t pid,
   #if OPT_A2
 
   //struct proc_id * childret = kmalloc(sizeof(struct proc_id));
-  struct proc_id * childret;
-  result = wait(curproc -> pid, pid, &childret);
+  //struct proc_id * childret;
+  result = wait(curproc -> pid, pid, &exitstatus);
   
   if (result) {
     // cv_destroy(childret -> proc_cv);
@@ -187,11 +187,11 @@ sys_waitpid(pid_t pid,
   }
 
   //kprintf("return pid: %d", childret -> pid);
-  int exitcode = childret -> exit_code;
+  //int exitcode = childret -> exit_code;
 
   //cv_destroy(childret -> proc_cv);
   //kfree(childret);
-  exitstatus = _MKWAIT_EXIT(exitcode);
+  exitstatus = _MKWAIT_EXIT(exitstatus);
   result = copyout((void *)&exitstatus,status,sizeof(int));
   if (result) {
     return(result);
