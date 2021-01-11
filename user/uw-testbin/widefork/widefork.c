@@ -54,7 +54,7 @@ dowait(int childpid, int childnum)
   }
   if (WIFEXITED(rval)) {
 
-    printf("(WEXITSTATUS(rval) : %d\n", WEXITSTATUS(rval));
+    //printf("(WEXITSTATUS(rval) : %d\n", WEXITSTATUS(rval));
     if ((WEXITSTATUS(rval)) == childnum) {
       putchar('a'+childnum-1);
       putchar('\n');
