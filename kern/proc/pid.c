@@ -103,6 +103,8 @@ bool check_if_in_pid_array(struct proc_id * proc){
 
 int find_available_pos(void){
 
+
+
 	for (int i = 0; i < max_num; i++){
 
 		if ((pid_array[i] == NULL) && (!check_if_in_buffer(i+2))){
@@ -118,6 +120,19 @@ int find_available_pos(void){
 void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 
 	lock_acquire(pid_lock);
+
+	// if parent has exited, we do not have to put the process in the buffer;
+	for (int i = 0; i < max_num; i++){
+
+		if (pid_exit_buffer[i] -> parent = NULL){
+
+			cv_destroy(child -> proc_cv);
+			kfree(child);
+			pid_exit_buffer[i] = NULL;
+			
+		}
+
+	}
 
 	int pos = find_available_pos();
 
