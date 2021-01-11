@@ -141,15 +141,15 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 	if (parent == NULL){
 		child_return -> parent = NULL;
 		child_return -> proc_cv = cv_create(curproc -> p_name);
-		child_return -> exit_code = -1;
-		child_return -> require = 0;
+		//child_return -> exit_code = -1;
+		//child_return -> require = 0;
 	} else {
 
 		child_return -> parent = parent;
 		//for wait pid
 		child_return -> proc_cv = cv_create(curproc -> p_name);
-		child_return -> exit_code = -1;
-		child_return -> require = 0;
+		//child_return -> exit_code = -1;
+		//child_return -> require = 0;
 
 	}
 
@@ -228,6 +228,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id ** childret){
 		return err;
 
 	}
+	parent -> require = child_pid;
 
 	// if the child still not exit, wait until it exit
 	if (check_if_in_pid_array(child)){
@@ -281,6 +282,7 @@ int wait(struct proc_id * parent, pid_t child_pid, struct proc_id ** childret){
 								cv_destroy(pid_exit_buffer[i] -> proc_cv);
 								kfree(pid_exit_buffer[i]);
 								pid_exit_buffer[i] = NULL;
+								lock_release(pid_lock);
 								return 0;
 
 							}							
@@ -326,7 +328,7 @@ void exit(struct proc_id * proc, int exitcode){
 	lock_acquire(pid_lock);
 	if ((proc -> parent != NULL) && (proc -> parent -> require == proc -> pid)){
 		
-		proc -> parent -> require = 0;
+		//proc -> parent -> require = 0;
 		cv_signal(proc -> parent -> proc_cv, pid_lock);
 		return;
 

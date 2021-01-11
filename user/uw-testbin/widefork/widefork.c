@@ -33,7 +33,7 @@ dofork(int childnum)
   }
   else if (pid == 0) {
 
-    printf("i am in pid = 0\n");
+    //printf("i am in pid = 0\n");
     /* child */
     putchar('A'+childnum-1);
     putchar('\n');
