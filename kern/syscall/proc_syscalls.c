@@ -97,7 +97,7 @@ struct proc *p = curproc;
 #if OPT_A2
 exit(curproc -> pid, exitcode);
 curproc -> pid = NULL;
-DEBUG(MY,"i am in myself debug mode");
+DEBUG(MY,"i am in myself debug mode\n");
 
 #endif
 
