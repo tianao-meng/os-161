@@ -183,8 +183,7 @@ sys_waitpid(pid_t pid,
   if (result) {
     // cv_destroy(childret -> proc_cv);
     // kfree(childret);
-    //return(result);
-    return (0);
+    return(result);
   }
 
   //kprintf("return pid: %d", childret -> pid);
@@ -195,8 +194,7 @@ sys_waitpid(pid_t pid,
   exitstatus = _MKWAIT_EXIT(exitcode);
   result = copyout((void *)&exitstatus,status,sizeof(int));
   if (result) {
-    //return(result);
-    return (0);
+    return(result);
   }
   *retval = pid;
   return(0);
@@ -206,8 +204,7 @@ sys_waitpid(pid_t pid,
   exitstatus = 0;
   result = copyout((void *)&exitstatus,status,sizeof(int));
   if (result) {
-    //return(result);
-    return (0);
+    return(result);
   }
   *retval = pid;
   return(0);
