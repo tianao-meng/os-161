@@ -124,11 +124,15 @@ void allocate_pid(struct proc_id * parent, struct proc_id * child_return) {
 	// if parent has exited, we do not have to put the process in the buffer;
 	for (int i = 0; i < max_num; i++){
 
-		if (pid_exit_buffer[i] -> parent == NULL){
+		if (pid_exit_buffer[i] != NULL){
 
-			cv_destroy(pid_exit_buffer[i] -> proc_cv);
-			kfree(pid_exit_buffer[i]);
-			pid_exit_buffer[i] = NULL;
+			if (pid_exit_buffer[i] -> parent == NULL){
+
+				cv_destroy(pid_exit_buffer[i] -> proc_cv);
+				kfree(pid_exit_buffer[i]);
+				pid_exit_buffer[i] = NULL;
+
+			}
 
 		}
 
