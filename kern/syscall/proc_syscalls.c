@@ -25,7 +25,6 @@
 
 int sys_fork(pid_t *retval, struct trapframe *tf){
 
-  DEBUG(MY,"i am in myself debug mode\n");
   //kprintf("i am in sys_fork");
 
   struct addrspace *as_child;
