@@ -27,7 +27,7 @@ dofork(int childnum)
 {
   pid_t pid;
   pid = fork();
-  printf("pid : %d \n", pid);
+  //printf("pid : %d \n", pid);
   if (pid < 0) {
     errx(1,"fork %d",childnum);
   }
