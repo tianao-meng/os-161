@@ -25,7 +25,7 @@ int find_available_pos(void);
 struct proc_id * get_proc_pid(pid_t pid);
 struct proc_id * get_proc_pid_inbuffer(pid_t pid);
 void allocate_pid(struct proc_id * parent, struct proc_id * child_return);
-int wait(struct proc_id * parent, pid_t child_pid, struct proc_id ** childret);
+int wait(struct proc_id * parent, pid_t child_pid, int * childret);
 void exit(struct proc_id * proc, int exitcode);
 void delete_pid(struct proc_id * proc);
 
