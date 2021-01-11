@@ -90,8 +90,8 @@ void sys__exit(int exitcode) {
 
 struct addrspace *as;
 struct proc *p = curproc;
-kprintf("p : %p", p);
-kprintf("curproc: %p", curproc);
+kprintf("p : %p\n", p);
+kprintf("curproc: %p\n", curproc);
 /* for now, just include this to keep the compiler from complaining about
    an unused variable */
 (void)exitcode;
