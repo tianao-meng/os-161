@@ -341,6 +341,7 @@ void exit(struct proc_id * proc, int exitcode){
 				if (pid_exit_buffer[i] == NULL){
 
 					pid_exit_buffer[i] = proc;
+					break;
 					
 				}
 			}
@@ -351,6 +352,7 @@ void exit(struct proc_id * proc, int exitcode){
 					if (pid_array[i] -> pid == proc -> pid){
 
 							pid_array[i] = NULL;
+							break;
 						}					
 				}
 
