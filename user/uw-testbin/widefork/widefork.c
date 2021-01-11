@@ -48,7 +48,7 @@ dowait(int childpid, int childnum)
   int rval;
   if (waitpid(childpid,&rval,0) < 0) {
 
-    printf("i am here\n");
+    //printf("i am here\n");
     warnx("waitpid 1");
     return;
   }
