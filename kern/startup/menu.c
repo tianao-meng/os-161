@@ -287,12 +287,12 @@ cmd_dth()
 #if OPT_A2
 static
 int
-cmd_sys()
+cmd_my()
 {
 	// (void)nargs;
 	// (void)args;
 	
-	dbflags = DB_SYSCALL;
+	dbflags = MY;
 	return 0;
 }
 #endif
@@ -462,7 +462,7 @@ static const char *opsmenu[] = {
 	"[panic]   Intentional panic         ",
     "[dth]   Enable DB_THREADS debuging messages",
     #if OPT_A2
-    "[sys]   Enable DB_SYSCALL debuging messages",
+    "[my]   Enable MY debuging messages",
     #endif
 	"[q]       Quit and shut down        ",
 	NULL
@@ -576,7 +576,7 @@ static struct {
 	{ "panic",	cmd_panic },
 	{ "dth", cmd_dth },
 	#if OPT_A2
-	{ "sys", cmd_sys },
+	{ "my", cmd_my },
 	#endif
 	{ "q",		cmd_quit },
 	{ "exit",	cmd_quit },
