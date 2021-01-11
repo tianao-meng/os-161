@@ -89,7 +89,7 @@ void sys__exit(int exitcode) {
 
 
 struct addrspace *as;
-//struct proc *p = curproc;
+struct proc *p = curproc;
 /* for now, just include this to keep the compiler from complaining about
    an unused variable */
 (void)exitcode;
@@ -118,7 +118,7 @@ proc_remthread(curthread);
 
 /* if this is the last user process in the system, proc_destroy()
    will wake up the kernel menu thread */
-proc_destroy(curproc);
+proc_destroy(p);
 
 thread_exit();
 /* thread_exit() does not return, so we should never get here */
