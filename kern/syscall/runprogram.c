@@ -142,7 +142,7 @@ runprogram(char *progname, char ** args_kspace)
 	}
 
 	/* Warp to user mode. */
-	enter_new_process((execv_args_len + 1) /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
+	enter_new_process(execv_args_len /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
 	    stackptr, entrypoint);
 
 	/* enter_new_process does not return. */
