@@ -297,6 +297,10 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   vaddr_t args_userspace[execv_args_len + 1];
 
+  printf("0: %s \n", args_kspace[0]);
+  printf("1: %s \n", args_kspace[1]);
+  printf("2: %s \n", args_kspace[2]);
+
   size_t stackptr_move;
   for (size_t i = 0; i < execv_args_len; i++){
 
