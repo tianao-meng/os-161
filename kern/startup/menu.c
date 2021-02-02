@@ -92,7 +92,7 @@ void
 cmd_progthread(void *ptr, unsigned long nargs)
 {
 	char **args = ptr;
-	char **args_topush[nargs];
+	char *args_topush[nargs];
 	char progname[128];
 	int result;
 
