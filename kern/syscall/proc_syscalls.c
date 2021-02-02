@@ -184,7 +184,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       args_kspace[i] = come_in;
 
     }
-    args_kspace[i] = come_in;
+    //args_kspace[i] = come_in;
     each_len_args[i] = ele_len;
     args_actual_len = args_actual_len + ele_len;
 
