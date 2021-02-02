@@ -89,7 +89,8 @@ int sys_fork(pid_t *retval, struct trapframe *tf){
 // progname_uspace is user pointer that points to user space
 int sys_execv(const char *progname_uspace, char ** args_uspace){
 
-  struct addrspace *as_old, as_new;
+  struct addrspace *as_old;
+  struct addrspace *as_new;
   struct vnode *v;
   vaddr_t entrypoint, stackptr;
   int result;
@@ -114,7 +115,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   //execv_args_len ++; // for NULL
 
-  const char * args_kspace[execv_args_len + 1];
+  char * args_kspace[execv_args_len + 1];
   size_t args_actual_len;
   size_t ele_len;
 
@@ -122,7 +123,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   for (size_t i = 0; i < execv_args_len; i ++) {
 
-    result = copyinstr(args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
+    result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
 
     if (result){
 
@@ -152,7 +153,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   /* Create a new address space. */
   as_new = as_create();
-  if (as_new ==NULL) {
+  if (as_new == NULL) {
     vfs_close(v);
     return ENOMEM;
   }
@@ -175,13 +176,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   vfs_close(v);
 
   /* Define the user stack in the address space */
-  result = as_define_stack(as, &stackptr);
+  result = as_define_stack(as_new, &stackptr);
   if (result) {
     /* p_addrspace will go away when curproc is destroyed */
     return result;
   }
 
-  (userptr_t) args_userspace[execv_args_len + 1];
+  userptr_t args_userspace[execv_args_len + 1];
 
   size_t stackptr_move;
   for (size_t i = 0; i < execv_args_len; i++){
@@ -202,10 +203,15 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
   stackptr -= stackptr_move;
-  copyout(args_userspace, (userptr_t) stackptr, &stackptr_move);
+  result = copyout(args_userspace, (userptr_t) stackptr, stackptr_move);
+  if (result){
+
+      return result;
+
+  }
 
   /* Warp to user mode. */
-  enter_new_process((execv_args_len + 1) /*argc*/,  stackptr/*userspace addr of argv*/,
+  enter_new_process((execv_args_len + 1) /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
         stackptr, entrypoint);
   
   /* enter_new_process does not return. */
