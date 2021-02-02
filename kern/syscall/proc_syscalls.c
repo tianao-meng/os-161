@@ -226,14 +226,15 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     //kfree(progname_kspcae);
     return E2BIG;
   }
+  kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
 
 
   // cause our progname_kspace is char *, we do not need to do copy;
   /* Open the file. */
   result = vfs_open(progname_kspcae, O_RDONLY, 0, &v);
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
+
   if (result) {
 
 
