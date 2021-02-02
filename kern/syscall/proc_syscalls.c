@@ -93,13 +93,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   vaddr_t entrypoint, stackptr;
   int result;
 
-  char * progname_kspcae = kmalloc(sizeof(char) * PATH_MAX);
+  // char * progname_kspcae = kmalloc(sizeof(char) * PATH_MAX);
 
-  if (progname_kspcae == NULL){
-    return ENOMEM;
-  }
+  // if (progname_kspcae == NULL){
+  //   return ENOMEM;
+  // }
 
-  //char progname_kspcae[PATH_MAX];
+  char progname_kspcae[PATH_MAX];
   size_t progname_actual_len;
 
   result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
