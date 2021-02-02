@@ -9,8 +9,6 @@
 #include <lib.h>
 #if OPT_A2
 #include <limits.h>
-#endif
-#if OPT_A2
 #include <pid.h>
 #include <vfs.h>
 #endif
