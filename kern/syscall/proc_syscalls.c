@@ -93,17 +93,19 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   vaddr_t entrypoint, stackptr;
   int result;
 
-  char * progname_kspcae = kmalloc(sizeof(char) * PATH_MAX);
+  //char * progname_kspcae = kmalloc(sizeof(char) * PATH_MAX);
 
-  if (progname_kspcae == NULL){
-    return ENOMEM;
-  }
+  // if (progname_kspcae == NULL){
+  //   return ENOMEM;
+  // }
+
+  char * progname_kspcae[PATH_MAX];
   size_t progname_actual_len;
 
   result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
 
   if (result){
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return result;
 
   }
@@ -117,8 +119,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   //execv_args_len ++; // for NULL
 
-  char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
-
+  //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
+  char ** args_kspace [(execv_args_len + 1)];
   if (args_kspace == NULL){
     return ENOMEM;
   }
@@ -130,32 +132,33 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   for (size_t i = 0; i < execv_args_len; i ++) {
 
-    args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
+    //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
+    char * come_in[PATH_MAX]
+    args_kspace[i] = come_in;
+    // if (args_kspace[i] == NULL){
 
-    if (args_kspace[i] == NULL){
+    //   for (size_t j = 0; j < i; j++){
 
-      for (size_t j = 0; j < i; j++){
+    //     kfree(args_kspace[j]);
 
-        kfree(args_kspace[j]);
+    //   }
+    //   kfree(args_kspace);
+    //   kfree(progname_kspcae);
+    //   return result;
 
-      }
-      kfree(args_kspace);
-      kfree(progname_kspcae);
-      return result;
-
-    }
+    // }
 
     result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
 
     if (result){
 
-      for (size_t j = 0; j <= i; j++){
+      // for (size_t j = 0; j <= i; j++){
 
-        kfree(args_kspace[j]);
+      //   kfree(args_kspace[j]);
 
-      }
-      kfree(args_kspace);
-      kfree(progname_kspcae);
+      // }
+      // kfree(args_kspace);
+      // kfree(progname_kspcae);
 
       return result;
 
@@ -172,13 +175,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   if (args_actual_len > ARG_MAX){
 
-    for (size_t j = 0; j < (execv_args_len + 1); j++){
+    // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-      kfree(args_kspace[j]);
+    //   kfree(args_kspace[j]);
 
-    }
-    kfree(args_kspace);
-    kfree(progname_kspcae);
+    // }
+    // kfree(args_kspace);
+    // kfree(progname_kspcae);
     return E2BIG;
   }
 
@@ -189,13 +192,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   if (result) {
 
 
-    for (size_t j = 0; j < (execv_args_len + 1); j++){
+    // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-      kfree(args_kspace[j]);
+    //   kfree(args_kspace[j]);
 
-    }
-    kfree(args_kspace);
-    kfree(progname_kspcae);
+    // }
+    // kfree(args_kspace);
+    // kfree(progname_kspcae);
 
     return result;
   }
@@ -204,13 +207,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   as_new = as_create();
   if (as_new == NULL) {
     vfs_close(v);
-    for (size_t j = 0; j < (execv_args_len + 1); j++){
+    // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-      kfree(args_kspace[j]);
+    //   kfree(args_kspace[j]);
 
-    }
-    kfree(args_kspace);
-    kfree(progname_kspcae);
+    // }
+    // kfree(args_kspace);
+    // kfree(progname_kspcae);
     return ENOMEM;
   }
 
@@ -226,13 +229,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     /* p_addrspace will go away when curproc is destroyed */
     vfs_close(v);
 
-    for (size_t j = 0; j < (execv_args_len + 1); j++){
+    // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-      kfree(args_kspace[j]);
+    //   kfree(args_kspace[j]);
 
-    }
-    kfree(args_kspace);
-    kfree(progname_kspcae);
+    // }
+    // kfree(args_kspace);
+    // kfree(progname_kspcae);
     return result;
   }
 
@@ -243,13 +246,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   result = as_define_stack(as_new, &stackptr);
   if (result) {
     /* p_addrspace will go away when curproc is destroyed */
-    for (size_t j = 0; j < (execv_args_len + 1); j++){
+    // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-      kfree(args_kspace[j]);
+    //   kfree(args_kspace[j]);
 
-    }
-    kfree(args_kspace);
-    kfree(progname_kspcae);
+    // }
+    // kfree(args_kspace);
+    // kfree(progname_kspcae);
     return result;
   }
 
@@ -264,13 +267,13 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     args_userspace[i] = stackptr;
 
     if (result){
-      for (size_t j = 0; j < (execv_args_len + 1); j++){
+      // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-        kfree(args_kspace[j]);
+      //   kfree(args_kspace[j]);
 
-      }
-      kfree(args_kspace);
-      kfree(progname_kspcae);
+      // }
+      // kfree(args_kspace);
+      // kfree(progname_kspcae);
       return result;
 
     }
@@ -282,16 +285,24 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   stackptr -= stackptr_move;
   result = copyout(args_userspace, (userptr_t) stackptr, stackptr_move);
   if (result){
-      for (size_t j = 0; j < (execv_args_len + 1); j++){
+      // for (size_t j = 0; j < (execv_args_len + 1); j++){
 
-        kfree(args_kspace[j]);
+      //   kfree(args_kspace[j]);
 
-      }
-      kfree(args_kspace);
-      kfree(progname_kspcae);
+      // }
+      // kfree(args_kspace);
+      // kfree(progname_kspcae);
       return result;
 
   }
+
+  // for (size_t j = 0; j < (execv_args_len + 1); j++){
+
+  //   kfree(args_kspace[j]);
+
+  // }
+  // kfree(args_kspace);
+  // kfree(progname_kspcae);
 
   /* Warp to user mode. */
   enter_new_process(execv_args_len /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
