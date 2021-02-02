@@ -87,70 +87,69 @@ getinterval(time_t s1, uint32_t ns1, time_t s2, uint32_t ns2,
 #if OPT_A2
 
 
-	static
-	void
-	cmd_progthread(void *ptr, unsigned long nargs)
-	{
-		char **args = ptr;
-		char **args_topush;
-		char progname[128];
-		int result;
+static
+void
+cmd_progthread(void *ptr, unsigned long nargs)
+{
+	char **args = ptr;
+	char **args_topush;
+	char progname[128];
+	int result;
 
-		KASSERT(nargs >= 1);
+	KASSERT(nargs >= 1);
 
-		/* Hope we fit. */
-		KASSERT(strlen(args[0]) < sizeof(progname));
+	/* Hope we fit. */
+	KASSERT(strlen(args[0]) < sizeof(progname));
 
-		strcpy(progname, args[0]);
+	strcpy(progname, args[0]);
 
-		for (unsigned long i = 0; i < nargs; i++){
+	for (unsigned long i = 0; i < nargs; i++){
 
-			strcpy(args_topush[i], args[i]);	
-		}
-
-		result = runprogram(progname, args_topush);
-
-		if (result) {
-			kprintf("Running program %s failed: %s\n", args[0],
-				strerror(result));
-			return;
-		}
-
-		/* NOTREACHED: runprogram only returns on error. */
+		strcpy(args_topush[i], args[i]);	
 	}
 
+	result = runprogram(progname, args_topush);
+
+	if (result) {
+		kprintf("Running program %s failed: %s\n", args[0],
+			strerror(result));
+		return;
+	}
+
+	/* NOTREACHED: runprogram only returns on error. */
+}
 
 #else
 
-	static
-	void
-	cmd_progthread(void *ptr, unsigned long nargs)
-	{
-		char **args = ptr;
-		char progname[128];
-		int result;
+static
+void
+cmd_progthread(void *ptr, unsigned long nargs)
+{
+	char **args = ptr;
+	char progname[128];
+	int result;
 
-		KASSERT(nargs >= 1);
+	KASSERT(nargs >= 1);
 
-		if (nargs > 2) {
-			kprintf("Warning: argument passing from menu not supported\n");
-		}
-
-		/* Hope we fit. */
-		KASSERT(strlen(args[0]) < sizeof(progname));
-
-		strcpy(progname, args[0]);
-
-		result = runprogram(progname);
-
-		if (result) {
-			kprintf("Running program %s failed: %s\n", args[0],
-				strerror(result));
-			return;
-		}
-
-		/* NOTREACHED: runprogram only returns on error. */
+	if (nargs > 2) {
+		kprintf("Warning: argument passing from menu not supported\n");
 	}
+
+	/* Hope we fit. */
+	KASSERT(strlen(args[0]) < sizeof(progname));
+
+	strcpy(progname, args[0]);
+
+	result = runprogram(progname);
+
+	if (result) {
+		kprintf("Running program %s failed: %s\n", args[0],
+			strerror(result));
+		return;
+	}
+
+	/* NOTREACHED: runprogram only returns on error. */
+}
 
 
 #endif
