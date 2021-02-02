@@ -120,11 +120,11 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   //execv_args_len ++; // for NULL
 
-  char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
-  //char * args_kspace [(execv_args_len + 1)];
-  if (args_kspace == NULL){
-    return ENOMEM;
-  }
+  //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
+  char * args_kspace [(execv_args_len + 1)];
+  // if (args_kspace == NULL){
+  //   return ENOMEM;
+  // }
 
   size_t args_actual_len = 0;
   size_t ele_len;
@@ -182,7 +182,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
         kfree(args_kspace[j]);
 
       }
-      kfree(args_kspace);
+      //kfree(args_kspace);
       //kfree(progname_kspcae);
 
       return result;
@@ -215,7 +215,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       kfree(args_kspace[j]);
 
     }
-    kfree(args_kspace);
+    //kfree(args_kspace);
     //kfree(progname_kspcae);
     return E2BIG;
   }
@@ -232,7 +232,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       kfree(args_kspace[j]);
 
     }
-    kfree(args_kspace);
+    //kfree(args_kspace);
     //kfree(progname_kspcae);
 
     return result;
@@ -247,7 +247,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       kfree(args_kspace[j]);
 
     }
-    kfree(args_kspace);
+    //kfree(args_kspace);
     //kfree(progname_kspcae);
     return ENOMEM;
   }
@@ -269,7 +269,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       kfree(args_kspace[j]);
 
     }
-    kfree(args_kspace);
+    //kfree(args_kspace);
     //kfree(progname_kspcae);
     return result;
   }
@@ -286,7 +286,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       kfree(args_kspace[j]);
 
     }
-    kfree(args_kspace);
+    //kfree(args_kspace);
     //kfree(progname_kspcae);
     return result;
   }
@@ -307,7 +307,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
         kfree(args_kspace[j]);
 
       }
-      kfree(args_kspace);
+      //kfree(args_kspace);
       //kfree(progname_kspcae);
       return result;
 
@@ -325,7 +325,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
         kfree(args_kspace[j]);
 
       }
-      kfree(args_kspace);
+      //kfree(args_kspace);
       //kfree(progname_kspcae);
       return result;
 
@@ -336,7 +336,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     kfree(args_kspace[j]);
 
   }
-  kfree(args_kspace);
+  //kfree(args_kspace);
   //kfree(progname_kspcae);
 
   /* Warp to user mode. */
