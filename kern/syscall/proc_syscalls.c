@@ -120,7 +120,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   size_t each_len_args[execv_args_len];
 
-  for (int i = 0; i < execv_args_len; i ++) {
+  for (size_t i = 0; i < execv_args_len; i ++) {
 
     result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
 
@@ -184,7 +184,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   (userptr_t) args_userspace[execv_args_len + 1];
 
   size_t stackptr_move;
-  for (int i = 0; i < execv_args_len; i++){
+  for (size_t i = 0; i < execv_args_len; i++){
 
     stackptr_move = ROUNDUP(each_len_args[i],8);
     stackptr -= stackptr_move;
