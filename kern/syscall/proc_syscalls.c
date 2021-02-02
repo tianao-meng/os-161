@@ -168,7 +168,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
     }
 
-    kprintf("%d: %s \n", i,args_kspace[0]);
+    kprintf("%d: %s \n", i,args_kspace[i]);
     
 
     // if (i == 0){
