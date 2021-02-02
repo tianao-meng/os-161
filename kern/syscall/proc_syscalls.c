@@ -262,6 +262,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   /* Switch to it and activate it. */
   as_old = curproc_setas(as_new);
+   kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
 
   as_destroy(as_old);
   as_activate();
@@ -269,9 +272,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   /* Load the executable. */
 
   result = load_elf(v, &entrypoint);
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
+
   if (result) {
     /* p_addrspace will go away when curproc is destroyed */
     vfs_close(v);
