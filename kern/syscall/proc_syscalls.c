@@ -123,7 +123,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     return ENOMEM;
   }
 
-  size_t args_actual_len;
+  size_t args_actual_len = 0;
   size_t ele_len;
 
   size_t each_len_args[execv_args_len];
@@ -166,8 +166,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   }
 
-  kprintf("args_actual_len: %d ", args_actual_len);
-  kprintf("ARG_MAX: %d ", ARG_MAX);
+  //kprintf("args_actual_len: %d ", args_actual_len);
+  //kprintf("ARG_MAX: %d ", ARG_MAX);
   args_kspace[execv_args_len] = NULL;  
 
   if (args_actual_len > ARG_MAX){
