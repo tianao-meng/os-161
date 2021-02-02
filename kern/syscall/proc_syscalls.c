@@ -226,9 +226,6 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     //kfree(progname_kspcae);
     return E2BIG;
   }
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
 
 
   // cause our progname_kspace is char *, we do not need to do copy;
@@ -251,6 +248,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   /* Create a new address space. */
   as_new = as_create();
+  kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
   if (as_new == NULL) {
     vfs_close(v);
     // for (size_t j = 0; j < (execv_args_len + 1); j++){
