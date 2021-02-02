@@ -37,6 +37,9 @@
 #include <kern/errno.h>
 #include <kern/fcntl.h>
 #include <lib.h>
+#if OPT_A2
+#include <limits.h>
+#endif
 #include <proc.h>
 #include <current.h>
 #include <addrspace.h>
@@ -114,7 +117,7 @@ runprogram(char *progname, char ** args_kspace)
 	size_t stackptr_move;
 	for (size_t i = 0; i < execv_args_len; i++){
 
-		stackptr_move = ROUNDUP(each_len_args[i],8);
+		stackptr_move = ROUNDUP(strlen(args_kspace[i]),8);
 		stackptr -= stackptr_move;
 		result = copyoutstr(args_kspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
 		args_userspace[i] = stackptr;
