@@ -106,7 +106,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
 
   if (result){
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return result;
 
   }
@@ -148,7 +148,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
       }
       kfree(args_kspace);
-      kfree(progname_kspcae);
+      //kfree(progname_kspcae);
       return result;
 
     }
@@ -172,7 +172,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
       }
       kfree(args_kspace);
-      kfree(progname_kspcae);
+      //kfree(progname_kspcae);
 
       return result;
 
@@ -205,7 +205,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
     }
     kfree(args_kspace);
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return E2BIG;
   }
 
@@ -222,7 +222,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
     }
     kfree(args_kspace);
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
 
     return result;
   }
@@ -237,7 +237,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
     }
     kfree(args_kspace);
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return ENOMEM;
   }
 
@@ -259,7 +259,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
     }
     kfree(args_kspace);
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return result;
   }
 
@@ -276,7 +276,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
     }
     kfree(args_kspace);
-    kfree(progname_kspcae);
+    //kfree(progname_kspcae);
     return result;
   }
 
@@ -297,7 +297,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
       }
       kfree(args_kspace);
-      kfree(progname_kspcae);
+      //kfree(progname_kspcae);
       return result;
 
     }
@@ -315,7 +315,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
       }
       kfree(args_kspace);
-      kfree(progname_kspcae);
+      //kfree(progname_kspcae);
       return result;
 
   }
@@ -326,7 +326,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   }
   kfree(args_kspace);
-  kfree(progname_kspcae);
+  //kfree(progname_kspcae);
 
   /* Warp to user mode. */
   enter_new_process(execv_args_len /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
