@@ -285,6 +285,10 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   /* Done with the file now. */
   vfs_close(v);
 
+  kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
+
   /* Define the user stack in the address space */
   result = as_define_stack(as_new, &stackptr);
   if (result) {
@@ -298,10 +302,6 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     //kfree(progname_kspcae);
     return result;
   }
-
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
 
   vaddr_t args_userspace[execv_args_len + 1];
 
