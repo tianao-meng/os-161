@@ -137,15 +137,15 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     // char come_in_0[PATH_MAX];
     // char come_in[ARG_MAX];
 
-    if (i == 0){
-      char come_in_0[PATH_MAX];
-      args_kspace[i] = come_in_0;
-      //args_kspace[i] = kmalloc(sizeof(char) * PATH_MAX);
-    } else {
-      char come_in[ARG_MAX];
-      args_kspace[i] = come_in;
-      //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
-    }
+    // if (i == 0){
+    //   char come_in_0[PATH_MAX];
+    //   args_kspace[i] = come_in_0;
+    //   //args_kspace[i] = kmalloc(sizeof(char) * PATH_MAX);
+    // } else {
+    //   char come_in[ARG_MAX];
+    //   args_kspace[i] = come_in;
+    //   //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
+    // }
     
 
 
