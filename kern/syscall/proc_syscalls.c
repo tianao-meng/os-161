@@ -122,7 +122,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   for (size_t i = 0; i < execv_args_len; i ++) {
 
-    result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
+    result = copyinstr(args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
 
     if (result){
 
