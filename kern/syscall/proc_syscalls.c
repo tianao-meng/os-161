@@ -167,6 +167,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     } else {
       result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
     }
+
+    kprintf("%d: %s \n", i,args_kspace[0]);
     
 
     // if (i == 0){
@@ -297,9 +299,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   vaddr_t args_userspace[execv_args_len + 1];
 
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
+  // kprintf("0: %s \n", args_kspace[0]);
+  // kprintf("1: %s \n", args_kspace[1]);
+  // kprintf("2: %s \n", args_kspace[2]);
 
   size_t stackptr_move;
   for (size_t i = 0; i < execv_args_len; i++){
