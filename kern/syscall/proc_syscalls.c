@@ -122,6 +122,19 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
   char * args_kspace [(execv_args_len + 1)];
+
+  for (size_t i = 0; i < execv_args_len; i++){
+    if (i == 0){
+      char come_in_0[PATH_MAX];
+      args_kspace[i] = come_in_0；
+      //args_kspace[i] = kmalloc(sizeof(char) * PATH_MAX);
+    } else {
+      char come_in[ARG_MAX];
+      args_kspace[i] = come_in；
+      //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
+    }
+
+  }
   // if (args_kspace == NULL){
   //   return ENOMEM;
   // }
@@ -137,15 +150,15 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     // char come_in_0[PATH_MAX];
     // char come_in[ARG_MAX];
 
-    if (i == 0){
-      char come_in_0[PATH_MAX] = "";
-      args_kspace[i] = come_in_0；
-      //args_kspace[i] = kmalloc(sizeof(char) * PATH_MAX);
-    } else {
-      char come_in[ARG_MAX] = "";
-      args_kspace[i] = come_in；
-      //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
-    }
+    // if (i == 0){
+    //   char come_in_0[PATH_MAX];
+    //   args_kspace[i] = come_in_0；
+    //   //args_kspace[i] = kmalloc(sizeof(char) * PATH_MAX);
+    // } else {
+    //   char come_in[ARG_MAX];
+    //   args_kspace[i] = come_in；
+    //   //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
+    // }
     
 
 
