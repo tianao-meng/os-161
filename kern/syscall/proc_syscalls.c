@@ -199,7 +199,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     }
     
   }
-  args_userspace[execv_args_len] = NULL;
+  args_userspace[execv_args_len] = (vaddr_t)NULL;
 
   stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
   stackptr -= stackptr_move;
