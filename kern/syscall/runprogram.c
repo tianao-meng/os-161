@@ -103,38 +103,46 @@ runprogram(char *progname, char ** args_kspace)
 
 
 	size_t execv_args_len = 0;
-	for (int i = 0; args_kspace[i] != NULL; i++){
+	for (size_t i = 0; args_kspace[i] != NULL; i++){
 
 		execv_args_len ++;
 
 	}
 
-	(userptr_t) args_userspace[execv_args_len + 1];
+	vaddr_t args_userspace[execv_args_len + 1];
 
-	for (int i = 0; i < execv_args_len; i++){
+	size_t stackptr_move;
+	for (size_t i = 0; i < execv_args_len; i++){
 
-		stackptr -= ROUNDUP(each_len_args[i],8);
-		result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, ROUNDUP(each_len_args[i],8));
+		stackptr_move = ROUNDUP(each_len_args[i],8);
+		stackptr -= stackptr_move;
+		result = copyoutstr(args_kspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
 		args_userspace[i] = stackptr;
 
 		if (result){
 
 		  return result;
 
-		}
+	}
 
 	}
-	(userptr_t) args_userspace[execv_args_len] = NULL;
+	args_userspace[execv_args_len] = (vaddr_t)NULL;
 
-	stackptr -= ROUNDUP(((execv_args_len + 1) * 4),8);
-	copyout(args_userspace, (userptr_t) stackptr, ROUNDUP(((execv_args_len + 1) * 4),8));
+	stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
+	stackptr -= stackptr_move;
+	result = copyout(args_userspace, (userptr_t) stackptr, stackptr_move);
+	if (result){
+
+	  return result;
+
+	}
 
 	/* Warp to user mode. */
-	enter_new_process((execv_args_len + 1) /*argc*/,  stackptr/*userspace addr of argv*/,
+	enter_new_process((execv_args_len + 1) /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
 	    stackptr, entrypoint);
 
 	/* enter_new_process does not return. */
-	panic("enter_new_process returned\n");
+	//panic("enter_new_process returned\n");
 	return EINVAL;
 
 }
