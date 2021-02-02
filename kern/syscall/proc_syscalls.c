@@ -123,7 +123,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
   char * args_kspace [(execv_args_len + 1)];
 
-  for (int i = 0; i < (execv_args_len); i++){
+  for (size_t i = 0; i < (execv_args_len); i++){
 
     if (i == 0){
       char str_args[PATH_MAX];
