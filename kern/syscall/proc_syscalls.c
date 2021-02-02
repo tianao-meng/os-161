@@ -166,6 +166,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   }
 
+  kprintf("args_actual_len: ", args_actual_len);
+  kprintf("ARG_MAX: ", ARG_MAX);
   args_kspace[execv_args_len] = NULL;  
 
   if (args_actual_len > ARG_MAX){
