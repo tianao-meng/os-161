@@ -43,6 +43,9 @@
 #include <proc.h>
 #include <current.h>
 #include <addrspace.h>
+#if OPT_A2
+#include <copyinout.h>
+#endif
 #include <vm.h>
 #include <vfs.h>
 #include <syscall.h>
