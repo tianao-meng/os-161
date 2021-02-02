@@ -267,6 +267,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   as_activate();
 
   /* Load the executable. */
+  kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
   result = load_elf(v, &entrypoint);
   if (result) {
     /* p_addrspace will go away when curproc is destroyed */
@@ -282,9 +285,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     return result;
   }
 
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
+
 
   /* Done with the file now. */
   vfs_close(v);
