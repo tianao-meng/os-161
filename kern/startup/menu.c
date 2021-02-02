@@ -105,7 +105,7 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 	for (unsigned long i = 0; i < nargs; i++){
 
-		strcpy(args_topush[i], args[i]);	
+		args_topush[i] =kstrdup(args[i]); 
 	}
 
 	result = runprogram(progname, args_topush);
