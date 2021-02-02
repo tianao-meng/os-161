@@ -97,7 +97,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   char * progname_kspcae;
   size_t progname_actual_len;
 
-  result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, progname_actual_len);
+  result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
 
   if (result){
 
@@ -122,7 +122,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   for (int i = 0; i < execv_args_len; i ++) {
 
-    result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, ele_len);
+    result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, &ele_len);
 
     if (result){
 
@@ -183,10 +183,12 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   (userptr_t) args_userspace[execv_args_len + 1];
 
+  size_t stackptr_move;
   for (int i = 0; i < execv_args_len; i++){
 
-    stackptr -= ROUNDUP(each_len_args[i],8);
-    result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, ROUNDUP(each_len_args[i],8));
+    stackptr_move = ROUNDUP(each_len_args[i],8);
+    stackptr -= stackptr_move;
+    result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
     args_userspace[i] = stackptr;
 
     if (result){
@@ -198,8 +200,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   }
   (userptr_t) args_userspace[execv_args_len] = NULL;
 
-  stackptr -= ROUNDUP(((execv_args_len + 1) * 4),8);
-  copyout(args_userspace, (userptr_t) stackptr, ROUNDUP(((execv_args_len + 1) * 4),8));
+  stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
+  stackptr -= stackptr_move;
+  copyout(args_userspace, (userptr_t) stackptr, &stackptr_move);
 
   /* Warp to user mode. */
   enter_new_process((execv_args_len + 1) /*argc*/,  stackptr/*userspace addr of argv*/,
