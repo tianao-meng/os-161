@@ -37,14 +37,12 @@
 #include <kern/errno.h>
 #include <kern/fcntl.h>
 #include <lib.h>
-#if OPT_A2
-#include <limits.h>
-#endif
 #include <proc.h>
 #include <current.h>
 #include <addrspace.h>
 #if OPT_A2
 #include <copyinout.h>
+#include <limits.h>
 #endif
 #include <vm.h>
 #include <vfs.h>
