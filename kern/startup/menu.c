@@ -92,7 +92,7 @@ void
 cmd_progthread(void *ptr, unsigned long nargs)
 {
 	char **args = ptr;
-	char **args_topush;
+	char **args_topush[nargs];
 	char progname[128];
 	int result;
 
@@ -107,6 +107,8 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 		args_topush[i] =kstrdup(args[i]); 
 	}
+
+	//args_topush[nargs] = NULL;
 
 	result = runprogram(progname, args_topush);
 
