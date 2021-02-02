@@ -182,14 +182,14 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     return result;
   }
 
-  userptr_t args_userspace[execv_args_len + 1];
+  vaddr_t args_userspace[execv_args_len + 1];
 
   size_t stackptr_move;
   for (size_t i = 0; i < execv_args_len; i++){
 
     stackptr_move = ROUNDUP(each_len_args[i],8);
     stackptr -= stackptr_move;
-    result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
+    result = copyoutstr(args_kspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
     args_userspace[i] = stackptr;
 
     if (result){
@@ -199,7 +199,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     }
     
   }
-  (userptr_t) args_userspace[execv_args_len] = NULL;
+  args_userspace[execv_args_len] = NULL;
 
   stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
   stackptr -= stackptr_move;
