@@ -213,9 +213,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   //kprintf("args_actual_len: %d ", args_actual_len);
   //kprintf("ARG_MAX: %d ", ARG_MAX);
   args_kspace[execv_args_len] = NULL;  
-  kprintf("0: %s \n", args_kspace[0]);
-  kprintf("1: %s \n", args_kspace[1]);
-  kprintf("2: %s \n", args_kspace[2]);
+
 
   if (args_actual_len > ARG_MAX){
 
@@ -233,6 +231,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   // cause our progname_kspace is char *, we do not need to do copy;
   /* Open the file. */
   result = vfs_open(progname_kspcae, O_RDONLY, 0, &v);
+  kprintf("0: %s \n", args_kspace[0]);
+  kprintf("1: %s \n", args_kspace[1]);
+  kprintf("2: %s \n", args_kspace[2]);
   if (result) {
 
 
