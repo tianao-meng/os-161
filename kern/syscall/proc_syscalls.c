@@ -121,9 +121,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
   char * args_kspace [(execv_args_len + 1)];
-  if (args_kspace == NULL){
-    return ENOMEM;
-  }
+  // if (args_kspace == NULL){
+  //   return ENOMEM;
+  // }
 
   size_t args_actual_len = 0;
   size_t ele_len;
@@ -135,11 +135,9 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
     if (i == 0){
       char come_in[PATH_MAX];
-      args_kspace[i] = come_in;
     } else {
 
       char come_in[ARG_MAX];
-      args_kspace[i] = come_in;
 
     }
 
@@ -171,6 +169,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
       return result;
 
     }
+    args_kspace[i] = come_in;
     each_len_args[i] = ele_len;
     args_actual_len = args_actual_len + ele_len;
 
