@@ -135,8 +135,16 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   for (size_t i = 0; i < execv_args_len; i ++) {
 
-    char come_in_0[PATH_MAX] = 'a';
-    char come_in[ARG_MAX] = 'a';
+    char come_in_0[PATH_MAX];
+    char come_in[ARG_MAX];
+    if (i == 0){
+      come_in_0[0] = 'a';
+    } else {
+      come_in[0] = 'a';
+    }
+    
+    
+    
 
     //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
 
