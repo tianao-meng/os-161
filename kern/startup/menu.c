@@ -103,7 +103,7 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 	strcpy(progname, args[0]);
 
-	for (int i = 0; i < nargs; i++){
+	for (unsigned long i = 0; i < nargs; i++){
 
 		strcpy(args_topush[i], args[i]);	
 	}
