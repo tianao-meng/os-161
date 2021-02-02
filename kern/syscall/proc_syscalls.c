@@ -99,7 +99,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   //   return ENOMEM;
   // }
 
-  char progname_kspcae[PATH_MAX] = "a";
+  char progname_kspcae[PATH_MAX];
+  progname_kspcae[0] = 'a';
   size_t progname_actual_len;
 
   result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
