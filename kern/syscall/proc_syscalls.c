@@ -99,7 +99,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   //   return ENOMEM;
   // }
 
-  char * progname_kspcae[PATH_MAX];
+  char progname_kspcae[PATH_MAX];
   size_t progname_actual_len;
 
   result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, &progname_actual_len);
@@ -120,7 +120,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   //execv_args_len ++; // for NULL
 
   //char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
-  char ** args_kspace [(execv_args_len + 1)];
+  char * args_kspace [(execv_args_len + 1)];
   if (args_kspace == NULL){
     return ENOMEM;
   }
@@ -133,7 +133,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
   for (size_t i = 0; i < execv_args_len; i ++) {
 
     //args_kspace[i] = kmalloc(sizeof(char) * ARG_MAX);
-    char * come_in[PATH_MAX]
+    char come_in[PATH_MAX]
     args_kspace[i] = come_in;
     // if (args_kspace[i] == NULL){
 
