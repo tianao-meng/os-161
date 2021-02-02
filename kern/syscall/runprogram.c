@@ -51,6 +51,96 @@
  *
  * Calls vfs_open on progname and thus may destroy it.
  */
+
+#if OPT_A2
+int
+runprogram(char *progname, char ** args_kspace)
+{	
+	//panic("i am in runprogram");
+	struct addrspace *as;
+	struct vnode *v;
+	vaddr_t entrypoint, stackptr;
+	int result;
+
+	/* Open the file. */
+	result = vfs_open(progname, O_RDONLY, 0, &v);
+	if (result) {
+		return result;
+	}
+
+	/* We should be a new process. */
+	KASSERT(curproc_getas() == NULL);
+
+	/* Create a new address space. */
+	as = as_create();
+	if (as ==NULL) {
+		vfs_close(v);
+		return ENOMEM;
+	}
+
+	/* Switch to it and activate it. */
+	curproc_setas(as);
+	as_activate();
+
+	/* Load the executable. */
+	result = load_elf(v, &entrypoint);
+	if (result) {
+		/* p_addrspace will go away when curproc is destroyed */
+		vfs_close(v);
+		return result;
+	}
+
+	/* Done with the file now. */
+	vfs_close(v);
+
+	/* Define the user stack in the address space */
+	result = as_define_stack(as, &stackptr);
+	if (result) {
+		/* p_addrspace will go away when curproc is destroyed */
+		return result;
+	}
+
+
+
+	size_t execv_args_len = 0;
+	for (int i = 0; args_kspace[i] != NULL; i++){
+
+		execv_args_len ++;
+
+	}
+
+	(userptr_t) args_userspace[execv_args_len + 1];
+
+	for (int i = 0; i < execv_args_len; i++){
+
+		stackptr -= ROUNDUP(each_len_args[i],8);
+		result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, ROUNDUP(each_len_args[i],8));
+		args_userspace[i] = stackptr;
+
+		if (result){
+
+		  return result;
+
+		}
+
+	}
+	(userptr_t) args_userspace[execv_args_len] = NULL;
+
+	stackptr -= ROUNDUP(((execv_args_len + 1) * 4),8);
+	copyout(args_userspace, (userptr_t) stackptr, ROUNDUP(((execv_args_len + 1) * 4),8));
+
+	/* Warp to user mode. */
+	enter_new_process((execv_args_len + 1) /*argc*/,  stackptr/*userspace addr of argv*/,
+	    stackptr, entrypoint);
+
+	/* enter_new_process does not return. */
+	panic("enter_new_process returned\n");
+	return EINVAL;
+
+}
+
+#else
+
 int
 runprogram(char *progname)
 {	
@@ -101,9 +191,13 @@ runprogram(char *progname)
 	/* Warp to user mode. */
 	enter_new_process(0 /*argc*/, NULL /*userspace addr of argv*/,
 			  stackptr, entrypoint);
-	
+  
 	/* enter_new_process does not return. */
 	panic("enter_new_process returned\n");
 	return EINVAL;
+
+
 }
+
+#endif
 

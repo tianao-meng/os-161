@@ -81,8 +81,14 @@ int malloctest(int, char **);
 int mallocstress(int, char **);
 int nettest(int, char **);
 
+#if OPT_A2
+
+int runprogram(char *progname, char ** args_kspace);
+
+#else
 /* Routine for running a user-level program. */
 int runprogram(char *progname);
+#endif
 
 /* Kernel menu system. */
 void menu(char *argstr);

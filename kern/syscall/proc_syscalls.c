@@ -1,11 +1,18 @@
 #include "opt-A2.h"
 #include <types.h>
 #include <kern/errno.h>
+#if OPT_A2
+#include <kern/fcntl.h>
+#endif
 #include <kern/unistd.h>
 #include <kern/wait.h>
 #include <lib.h>
 #if OPT_A2
+#include <limits.h>
+#endif
+#if OPT_A2
 #include <pid.h>
+#include <vfs.h>
 #endif
 #include <syscall.h>
 #include <current.h>
@@ -76,6 +83,131 @@ int sys_fork(pid_t *retval, struct trapframe *tf){
   *retval = child -> pid -> pid;
   return 0;
 
+
+}
+
+// progname_uspace is user pointer that points to user space
+int sys_execv(const char *progname_uspace, char ** args_uspace){
+
+  struct addrspace *as_old, as_new;
+  struct vnode *v;
+  vaddr_t entrypoint, stackptr;
+  int result;
+
+  char * progname_kspcae;
+  size_t progname_actual_len;
+
+  result = copyinstr((const_userptr_t) progname_uspace, progname_kspcae, PATH_MAX, progname_actual_len);
+
+  if (result){
+
+    return result;
+
+  }
+
+  size_t execv_args_len = 0;
+  for (int i = 0; args_uspace[i] != NULL; i++){
+
+    execv_args_len ++;
+
+  }
+
+  //execv_args_len ++; // for NULL
+
+  const char * args_kspace[execv_args_len + 1];
+  size_t args_actual_len;
+  size_t ele_len;
+
+  size_t each_len_args[execv_args_len];
+
+  for (int i = 0; i < execv_args_len; i ++) {
+
+    result = copyinstr( (const_userptr_t) args_uspace[i], args_kspace[i], ARG_MAX, ele_len);
+
+    if (result){
+
+      return result;
+
+    }
+    each_len_args[i] = ele_len;
+    args_actual_len = args_actual_len + ele_len;
+
+
+  }
+
+  args_kspace[execv_args_len] = NULL;  
+
+  if (args_actual_len > ARG_MAX){
+    return E2BIG;
+  }
+
+
+  // cause our progname_kspace is char *, we do not need to do copy;
+  /* Open the file. */
+  result = vfs_open(progname_kspcae, O_RDONLY, 0, &v);
+  if (result) {
+
+    return result;
+  }
+
+  /* Create a new address space. */
+  as_new = as_create();
+  if (as_new ==NULL) {
+    vfs_close(v);
+    return ENOMEM;
+  }
+
+  /* Switch to it and activate it. */
+  as_old = curproc_setas(as_new);
+
+  as_destroy(as_old);
+  as_activate();
+
+  /* Load the executable. */
+  result = load_elf(v, &entrypoint);
+  if (result) {
+    /* p_addrspace will go away when curproc is destroyed */
+    vfs_close(v);
+    return result;
+  }
+
+  /* Done with the file now. */
+  vfs_close(v);
+
+  /* Define the user stack in the address space */
+  result = as_define_stack(as, &stackptr);
+  if (result) {
+    /* p_addrspace will go away when curproc is destroyed */
+    return result;
+  }
+
+  (userptr_t) args_userspace[execv_args_len + 1];
+
+  for (int i = 0; i < execv_args_len; i++){
+
+    stackptr -= ROUNDUP(each_len_args[i],8);
+    result = copyoutstr(args_userspace[i], (userptr_t) stackptr, ARG_MAX, ROUNDUP(each_len_args[i],8));
+    args_userspace[i] = stackptr;
+
+    if (result){
+
+      return result;
+
+    }
+    
+  }
+  (userptr_t) args_userspace[execv_args_len] = NULL;
+
+  stackptr -= ROUNDUP(((execv_args_len + 1) * 4),8);
+  copyout(args_userspace, (userptr_t) stackptr, ROUNDUP(((execv_args_len + 1) * 4),8));
+
+  /* Warp to user mode. */
+  enter_new_process((execv_args_len + 1) /*argc*/,  stackptr/*userspace addr of argv*/,
+        stackptr, entrypoint);
+  
+  /* enter_new_process does not return. */
+  //panic("enter_new_process returned\n");
+  return EINVAL;
 
 }
     
