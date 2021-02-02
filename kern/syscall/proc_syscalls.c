@@ -282,12 +282,14 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
     return result;
   }
 
-  /* Done with the file now. */
-  vfs_close(v);
-
   kprintf("0: %s \n", args_kspace[0]);
   kprintf("1: %s \n", args_kspace[1]);
   kprintf("2: %s \n", args_kspace[2]);
+
+  /* Done with the file now. */
+  vfs_close(v);
+
+
 
   /* Define the user stack in the address space */
   result = as_define_stack(as_new, &stackptr);
