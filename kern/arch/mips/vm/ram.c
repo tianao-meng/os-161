@@ -94,6 +94,7 @@ ram_bootstrap(void)
 paddr_t
 ram_stealmem(unsigned long npages)
 {
+	
 	size_t size;
 	paddr_t paddr;
 
