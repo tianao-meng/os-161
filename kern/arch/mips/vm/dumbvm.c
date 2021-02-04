@@ -124,7 +124,6 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	    return EFAULT;
 
 	#else
-
 	    /* We always create pages read-write, so we can't get this */
 		panic("dumbvm: got VM_FAULT_READONLY\n");
 
@@ -204,7 +203,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 	#if OPT_A3
 
-		if (faultaddress >= vbase1 && faultaddress < vtop1){
+		if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
 
 
 			ehi = faultaddress;
@@ -236,7 +235,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	}
 #if OPT_A3
 
-	if (faultaddress >= vbase1 && faultaddress < vtop1){
+	if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
 
 		ehi = faultaddress;
 		elo = paddr | TLBLO_VALID;
@@ -386,6 +385,9 @@ as_prepare_load(struct addrspace *as)
 	as_zero_region(as->as_pbase1, as->as_npages1);
 	as_zero_region(as->as_pbase2, as->as_npages2);
 	as_zero_region(as->as_stackpbase, DUMBVM_STACKPAGES);
+	#if OPT_A3
+	as -> in_load_elf = true;
+	#endif
 
 	return 0;
 }
@@ -394,6 +396,9 @@ int
 as_complete_load(struct addrspace *as)
 {
 	(void)as;
+	#if OPT_A3
+	as -> in_load_elf = false;
+	#endif
 	return 0;
 }
 
