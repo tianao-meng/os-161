@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
+#include "opt-A3.h"
 #include <types.h>
 #include <signal.h>
 #include <lib.h>
@@ -39,6 +39,9 @@
 #include <vm.h>
 #include <mainbus.h>
 #include <syscall.h>
+#if opt_A3
+#include<syscall.h>
+#endif
 
 
 /* in exception.S */
@@ -107,6 +110,12 @@ kill_curthread(vaddr_t epc, unsigned code, vaddr_t vaddr)
 		sig = SIGFPE;
 		break;
 	}
+
+#if opt_A3
+	sys__exit(sig);
+#endif
+
+
 
 	/*
 	 * You will probably want to change this.
