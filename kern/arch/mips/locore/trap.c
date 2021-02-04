@@ -111,7 +111,7 @@ kill_curthread(vaddr_t epc, unsigned code, vaddr_t vaddr)
 		break;
 	}
 
-#if opt_A3
+#if OPT_A3
 	sys__exit(sig);
 #else
 
