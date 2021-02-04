@@ -121,7 +121,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	switch (faulttype) {
 	    case VM_FAULT_READONLY:
 	#if OPT_A3
-	    return EPERM
+	    return EFAULT;
 	#endif
 		/* We always create pages read-write, so we can't get this */
 		panic("dumbvm: got VM_FAULT_READONLY\n");
