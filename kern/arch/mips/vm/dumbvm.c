@@ -186,7 +186,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
       pages++;
 
-      if (pages == numpages) {
+      if (pages == npages) {
 
         temp = potential_start;
 
@@ -297,7 +297,7 @@ free_kpages(vaddr_t addr)
 	// #endif
 
 #if OPT_A3
-  paddr_t p_addr = KVADDR_TO_PADDR(addr);
+  paddr_t p_addr = addr-MIPS_KSEG0;
 
   spinlock_acquire(&coremap_lock);
 
