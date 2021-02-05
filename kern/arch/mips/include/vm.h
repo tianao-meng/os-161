@@ -65,7 +65,12 @@
  * exception handler code) when converted to a vaddr it's *not* NULL, *is*
  * a valid address, and will make a *huge* mess if you scribble on it.
  */
+// #define PADDR_TO_KVADDR(paddr) ((paddr)+MIPS_KSEG0)
+#include "opt-A3.h"
 #define PADDR_TO_KVADDR(paddr) ((paddr)+MIPS_KSEG0)
+#if OPT_A3
+#define KVADDR_TO_PADDR(vaddr) ((vaddr)-MIPS_KSEG0)
+#endif
 
 /*
  * The top of user space. (Actually, the address immediately above the
