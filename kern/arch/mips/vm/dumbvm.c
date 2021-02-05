@@ -98,6 +98,8 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 	unsigned long npage_can_allocate = 0;
 
+
+
 	//search for if we can find continuous space for the npages;
 	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
 
@@ -220,6 +222,7 @@ free_kpages(vaddr_t addr)
 	#if OPT_A3
 
 	paddr_t phaddr = addr - MIPS_KSEG0;
+	spinlock_acquire(&coremap_lock);
 
 	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
 	unsigned long cur_page = page_belong;
@@ -237,7 +240,7 @@ free_kpages(vaddr_t addr)
 		//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
 	}
-
+	spinlock_release(&coremap_lock);
 
 	#else 
 
@@ -620,37 +623,59 @@ as_prepare_load(struct addrspace *as)
 
 	#if OPT_A3
 
-	for (size_t i = 0; i < as -> as_npages1; i ++){
+	// for (size_t i = 0; i < as -> as_npages1; i ++){
 
-		as->as_pbase1[i] = getppages(1);
-		if (as->as_pbase1[i] == 0) {
-			return ENOMEM;
-		}
-		as_zero_region(as->as_pbase1[i], 1);
+	// 	as->as_pbase1[i] = getppages(1);
+	// 	if (as->as_pbase1[i] == 0) {
+	// 		return ENOMEM;
+	// 	}
+	// 	as_zero_region(as->as_pbase1[i], 1);
 
-	}
+	// }
 
 
-	for (size_t i = 0; i < as -> as_npages2; i ++){
+	// for (size_t i = 0; i < as -> as_npages2; i ++){
 
-		as->as_pbase2[i] = getppages(1);
-		if (as->as_pbase2[i] == 0) {
-			return ENOMEM;
-		}
-		as_zero_region(as->as_pbase2[i], 1);
+	// 	as->as_pbase2[i] = getppages(1);
+	// 	if (as->as_pbase2[i] == 0) {
+	// 		return ENOMEM;
+	// 	}
+	// 	as_zero_region(as->as_pbase2[i], 1);
 
-	}
+	// }
 		
+	// as->as_stackpbase = kmalloc(sizeof(paddr_t) * DUMBVM_STACKPAGES);
+		
+	// for (size_t i = 0; i < DUMBVM_STACKPAGES; i ++){
+
+	// 	as->as_stackpbase[i] = getppages(1);
+	// 	if (as->as_stackpbase[i] == 0) {
+	// 		return ENOMEM;
+	// 	}
+	// 	as_zero_region(as->as_stackpbase[i], 1);
+
+	// }
+	for (unsigned int i = 0; i < as->as_npages1; i++) {
+	paddr_t adr = getppages(1);
+	if (adr == 0) return ENOMEM;
+	as->as_pbase1[i] = adr;
+	as_zero_region(as->as_pbase1[i], 1);
+	}
+	for (unsigned int i = 0; i < as->as_npages2; i++) {
+	paddr_t adr = getppages(1);
+	if (adr == 0) return ENOMEM;
+	as->as_pbase2[i] = adr;
+	as_zero_region(as->as_pbase2[i], 1);
+	}
 	as->as_stackpbase = kmalloc(sizeof(paddr_t) * DUMBVM_STACKPAGES);
-		
-	for (size_t i = 0; i < DUMBVM_STACKPAGES; i ++){
-
-		as->as_stackpbase[i] = getppages(1);
-		if (as->as_stackpbase[i] == 0) {
-			return ENOMEM;
-		}
-		as_zero_region(as->as_stackpbase[i], 1);
-
+	if (as->as_stackpbase == NULL) {
+		return ENOMEM;
+	}
+	for (unsigned int i = 0; i < DUMBVM_STACKPAGES; i++) {
+	paddr_t adr = getppages(1);
+	if (adr == 0) return ENOMEM;
+	as->as_stackpbase[i] = adr;
+	as_zero_region(as->as_stackpbase[i], 1);
 	}
 
 
