@@ -77,7 +77,7 @@ vm_bootstrap(void)
 
 	for (unsigned long i = 0; i < npages_available; i++){
 
-		*(coremap_start + (i * sizeof(int))) = 0;
+		*(int *)(coremap_start + (i * sizeof(int))) = 0;
 
 	}
 
@@ -102,7 +102,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
 
 
-		alloced = * (coremap_start + (cur_page * sizeof(int)));
+		alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
 
 		if (alloced == 0){
 
@@ -138,7 +138,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 				for (unsigned long npages_to_allocate = cur_page; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
 
-					*(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
+					*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
 
 				}
 
@@ -218,14 +218,14 @@ free_kpages(vaddr_t addr)
 
 	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
 	unsigned long cur_page = page_belong;
-	unsigned long alloced = * (coremap_start + cur_page * sizeof(int));
+	unsigned long alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
 	while (alloced == (cur_page + 1)){
 
-		* (coremap_start + cur_page * sizeof(int)) = 0;
+		* (int *)(coremap_start + cur_page * sizeof(int)) = 0;
 
 		cur_page ++;
-		alloced = * (coremap_start + cur_page * sizeof(int));
+		alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
 	}
 
