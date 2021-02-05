@@ -50,59 +50,40 @@
 /*
  * Wrap rma_stealmem in a spinlock.
  */
-// static struct spinlock stealmem_lock = SPINLOCK_INITIALIZER;
-
-// #if OPT_A3
-// static struct spinlock coremap_lock = SPINLOCK_INITIALIZER;
-// paddr_t  coremap_start;
-// paddr_t  coremap_end;
-// paddr_t * vm_start;
-// unsigned long coremap_npages;
-// unsigned long npages_available;
-// bool coremap_ready = false;
-// #endif
-#if OPT_A3
 static struct spinlock stealmem_lock = SPINLOCK_INITIALIZER;
+
+#if OPT_A3
 static struct spinlock coremap_lock = SPINLOCK_INITIALIZER;
-static bool coremap_ready = false;
-static unsigned int coremap_size = 0;
-static paddr_t coremap_start = 0;
-static paddr_t coremap_end = 0;
+paddr_t  coremap_start;
+paddr_t  coremap_end;
+paddr_t * vm_start;
+unsigned long coremap_npages;
+unsigned long npages_available;
+bool coremap_ready = false;
 #endif
 
 
 void
 vm_bootstrap(void)
 {	
-	// // get the available physical length after bootstrap
-	// ram_getsize(&coremap_start, &coremap_end);
+	// get the available physical length after bootstrap
+	ram_getsize(&coremap_start, &coremap_end);
 
-	// npages_available = (coremap_end - coremap_start) / PAGE_SIZE;
+	npages_available = (coremap_end - coremap_start) / PAGE_SIZE;
 
-	// coremap_npages = ((npages_available * (sizeof(int))) + PAGE_SIZE) / PAGE_SIZE;
+	coremap_npages = ((npages_available * (sizeof(int))) + PAGE_SIZE) / PAGE_SIZE;
 
-	// npages_available = npages_available - coremap_npages;
+	npages_available = npages_available - coremap_npages;
 
-	// for (unsigned long i = 0; i < npages_available; i++){
+	for (unsigned long i = 0; i < npages_available; i++){
 
-	// 	((int *) PADDR_TO_KVADDR(coremap_start))[i] = 0;
+		((int *) PADDR_TO_KVADDR(coremap_start))[i] = 0;
 
-	// }
+	}
 
-	// coremap_ready= true;
+	coremap_ready= true;
 
-	// /* Do nothing. */
-
-#if OPT_A3
-  ram_getsize(&coremap_start, &coremap_end);
-  coremap_size = (coremap_end - coremap_start) / PAGE_SIZE;
-  unsigned int temp = 0;
-  while (temp < coremap_size) {
-    ((int *) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
-    temp++;
-  }
-  coremap_ready = true;
-#endif
+	/* Do nothing. */
 }
 
 # if OPT_A3
@@ -111,104 +92,70 @@ vm_bootstrap(void)
 // the address struc for every process  will not be continuous based on our method
 paddr_t vm_stealmem(unsigned long npages) {
 
-	// unsigned long page_start = 0;
+	unsigned long page_start = 0;
 
-	// int alloced;
+	int alloced;
 
-	// unsigned long npage_can_allocate = 0;
+	unsigned long npage_can_allocate = 0;
 
-	// //search for if we can find continuous space for the npages;
-	// for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
+	//search for if we can find continuous space for the npages;
+	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
 
 
-	// 	alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 
-	// 	//alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
+		//alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
 
-	// 	if (alloced == 0){
+		if (alloced == 0){
 
-	// 		if (npage_can_allocate == 0){
+			if (npage_can_allocate == 0){
 
-	// 			page_start = cur_page + 1;
-	// 			npage_can_allocate ++;
+				page_start = cur_page + 1;
+				npage_can_allocate ++;
 
-	// 		} else {
-	// 			npage_can_allocate ++;
-	// 		}
+			} else {
+				npage_can_allocate ++;
+			}
 			
 
-	// 	} else {
+		} else {
 
-	// 		page_start = 0;
-	// 		npage_can_allocate = 0;
+			page_start = 0;
+			npage_can_allocate = 0;
 
-	// 	}
+		}
 
-	// 	if (npage_can_allocate == npages){
-	// 		break;
-	// 	}
+		if (npage_can_allocate == npages){
+			break;
+		}
 
-	// }
+	}
 
-	// if (npage_can_allocate == 0){
-	// 	return 0;
-	// } else {
+	if (npage_can_allocate == 0){
+		return 0;
+	} else {
 
-	// 	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++){
+		for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++){
 
-	// 		if ((cur_page + 1) == page_start){
+			if ((cur_page + 1) == page_start){
 
-	// 			for (unsigned long npages_to_allocate = 0; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
+				for (unsigned long npages_to_allocate = 0; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
 
-	// 				((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate] = npages_to_allocate + 1;
-	// 				//*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
+					((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate] = npages_to_allocate + 1;
+					//*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
 
-	// 			}
+				}
 
-	// 		}
-	// 		break;
-
-
-	// 	}
-
-	// 	return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + ((page_start - 1) * PAGE_SIZE));
+			}
+			break;
 
 
-	// }
+		}
 
-  unsigned int temp = 0;
-  while (temp < coremap_size) {
-    int cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-    unsigned int potential_start = temp;
-    unsigned long  pages = 0;
+		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + ((page_start - 1) * PAGE_SIZE));
 
-    while (potential_start + pages < coremap_size && cur == 0) {
 
-      pages++;
-
-      if (pages == npages) {
-
-        temp = potential_start;
-
-        for (unsigned long i = 1; i <= npages; i++) {
-          ((int *) PADDR_TO_KVADDR(coremap_start))[temp] = (int) i;
-          temp++;
-        }
-        unsigned int ps = potential_start;
-        unsigned long np = npages;
-        (void)ps;
-        (void)np;
-        return (potential_start + 1) * PAGE_SIZE + coremap_start;
-      }
-
-      temp++;
-      cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-    }
-
-    temp++;
-  }
-
-  return 0;
+	}
 
 }
 
@@ -270,59 +217,31 @@ free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
 
-	// #if OPT_A3
+	#if OPT_A3
 
-	// paddr_t phaddr = addr - MIPS_KSEG0;
+	paddr_t phaddr = addr - MIPS_KSEG0;
 
-	// unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
-	// unsigned long cur_page = page_belong;
-	// unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
+	unsigned long cur_page = page_belong;
+	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 
-	// while (alloced == (cur_page + 1)){
+	while (alloced == (cur_page + 1)){
 
-	// 	((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
-	// 	//* (int *)(coremap_start + cur_page * sizeof(int)) = 0;
+		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
+		//* (int *)(coremap_start + cur_page * sizeof(int)) = 0;
 
-	// 	cur_page ++;
-	// 	alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
-	// 	//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
+		cur_page ++;
+		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+		//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
-	// }
+	}
 
 
-	// #else 
+	#else 
 
-	// (void)addr;
-
-	// #endif
-
-#if OPT_A3
-  paddr_t p_addr = addr-MIPS_KSEG0;
-
-  spinlock_acquire(&coremap_lock);
-
-    unsigned int temp = ((p_addr - coremap_start) / PAGE_SIZE) - 1;
-    /* paddr_t cs = coremap_start; */
-    /* paddr_t p = p_addr; */
-    /* unsigned int sz = coremap_size; */
-    /* (void) cs; */
-    /* (void) p; */
-    /* (void) sz; */
-    KASSERT(temp < coremap_size);
-    ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
-    temp++;
-    int cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-
-    while (cur != 0 && cur != 1) {
-      ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
-      temp++;
-      cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-    }
-
-  spinlock_release(&coremap_lock);
-#else
 	(void)addr;
-#endif
+
+	#endif
 
 	
 }
@@ -432,14 +351,27 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 	#if OPT_A3
 
+	// if (faultaddress >= vbase1 && faultaddress < vtop1) {
+	// 	paddr = * (paddr_t *)as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
+	// }
+	// else if (faultaddress >= vbase2 && faultaddress < vtop2) {
+	// 	paddr = * (paddr_t *)as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
+	// }
+	// else if (faultaddress >= stackbase && faultaddress < stacktop) {
+	// 	paddr = * (paddr_t *)as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
+	// }
+	// else {
+	// 	return EFAULT;
+	// }
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
-		paddr = * (paddr_t *)as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
+		paddr = (faultaddress - vbase1) + as->as_pbase1[0];
+    code_seg = true;
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
-		paddr = * (paddr_t *)as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
+		paddr = (faultaddress - vbase2) + as->as_pbase2[0];
 	}
 	else if (faultaddress >= stackbase && faultaddress < stacktop) {
-		paddr = * (paddr_t *)as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
+		paddr = (faultaddress - stackbase) + as->as_stackpbase[0];
 	}
 	else {
 		return EFAULT;
