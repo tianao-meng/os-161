@@ -160,7 +160,10 @@ paddr_t vm_stealmem(unsigned long npages) {
 		kprintf("%s\n", "steal memory, and print the map");
 		for (unsigned long i = 0; i < npages_available ; i++){
 
-			kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+			if(((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1){
+				kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+			}
+			
 			
 		}
 
