@@ -146,11 +146,12 @@ paddr_t vm_stealmem(unsigned long npages) {
 				}
 
 			}
+			break;
 
 
 		}
 
-		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + (page_start - 1) * PAGE_SIZE);
+		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + (page_start - 1) * PAGE_SIZE + 1);
 
 
 	}
