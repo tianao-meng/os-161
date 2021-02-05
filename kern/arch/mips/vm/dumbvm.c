@@ -54,8 +54,8 @@ static struct spinlock stealmem_lock = SPINLOCK_INITIALIZER;
 
 #if OPT_A3
 static struct spinlock coremap_lock = SPINLOCK_INITIALIZER;
-paddr_t * coremap_start;
-paddr_t * coremap_end;
+paddr_t  coremap_start;
+paddr_t  coremap_end;
 paddr_t * vm_start;
 unsigned long coremap_npages;
 unsigned long npages_available;
@@ -67,7 +67,7 @@ void
 vm_bootstrap(void)
 {	
 	// get the available physical length after bootstrap
-	ram_getsize(coremap_start, coremap_end);
+	ram_getsize(&coremap_start, &coremap_end);
 
 	npages_available = (coremap_end - coremap_start) / PAGE_SIZE;
 
@@ -75,7 +75,7 @@ vm_bootstrap(void)
 
 	npages_available = npages_available - coremap_npages;
 
-	for (int i = 0; i < npages_available; i++){
+	for (unsigned long i = 0; i < npages_available; i++){
 
 		*(coremap_start + (i * sizeof(int))) = 0;
 
@@ -96,7 +96,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 	int alloced;
 
-	int npage_can_allocate = 0;
+	unsigned long npage_can_allocate = 0;
 
 	//search for if we can find continuous space for the npages;
 	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
@@ -147,7 +147,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 		}
 
-		return (coremap_start + (coremap_npages * PAGE_SIZE) + (page_start - 1) * PAGE_SIZE);
+		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + (page_start - 1) * PAGE_SIZE);
 
 
 	}
@@ -218,7 +218,7 @@ free_kpages(vaddr_t addr)
 
 	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
 	unsigned long cur_page = page_belong;
-	int alloced = * (coremap_start + cur_page * sizeof(int));
+	unsigned long alloced = * (coremap_start + cur_page * sizeof(int));
 
 	while (alloced == (cur_page + 1)){
 
@@ -345,13 +345,13 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	#if OPT_A3
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
-		paddr = * as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
+		paddr = * (paddr_t *)as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
-		paddr = * as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
+		paddr = * (paddr_t *)as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
 	}
 	else if (faultaddress >= stackbase && faultaddress < stacktop) {
-		paddr = * as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
+		paddr = * (paddr_t *)as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
 	}
 	else {
 		return EFAULT;
