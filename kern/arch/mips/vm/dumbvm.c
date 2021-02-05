@@ -159,6 +159,14 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 	}
 
+
+	printf("%s\n", "steal memory, and print the map");
+	for (unsigned long i = 0; i < coremap_npages ; i++){
+
+		printf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+		
+	}
+
 }
 
 #endif
@@ -239,6 +247,13 @@ free_kpages(vaddr_t addr)
 		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 		//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
+	}
+
+	printf("%s\n", "free memory, and print the map");
+	for (unsigned long i = 0; i < coremap_npages ; i++){
+
+		printf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+		
 	}
 	spinlock_release(&coremap_lock);
 
