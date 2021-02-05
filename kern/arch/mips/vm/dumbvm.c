@@ -793,7 +793,7 @@ as_create(void)
 	as->as_pbase2 = NULL;
 	as->as_npages2 = 0;
 	as->as_stackpbase = NULL;
-  as->loadelf_complete = false;
+  as->n_load_elf = false;
 #else
 	as->as_vbase1 = 0;
 	as->as_pbase1 = 0;
