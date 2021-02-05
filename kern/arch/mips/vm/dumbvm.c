@@ -190,7 +190,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
         temp = potential_start;
 
-        for (unsigned long i = 1; i <= numpages; i++) {
+        for (unsigned long i = 1; i <= npages; i++) {
           ((int *) PADDR_TO_KVADDR(coremap_start))[temp] = (int) i;
           temp++;
         }
