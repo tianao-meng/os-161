@@ -66,6 +66,8 @@ bool coremap_ready = false;
 void
 vm_bootstrap(void)
 {	
+
+	kprintf("%s \n", "i am in vm_bootstrap");
 	// get the available physical length after bootstrap
 	ram_getsize(&coremap_start, &coremap_end);
 
@@ -91,6 +93,8 @@ vm_bootstrap(void)
 // kalloc still allocate continuous pages of phy mem
 // the address struc for every process  will not be continuous based on our method
 paddr_t vm_stealmem(unsigned long npages) {
+
+	kprintf("%s \n", "i am in vm_stealmem");
 
 	unsigned long page_start = 0;
 
@@ -174,7 +178,8 @@ paddr_t vm_stealmem(unsigned long npages) {
 static
 paddr_t
 getppages(unsigned long npages)
-{
+{	
+	kprintf("%s \n", "i am in getppages");
 	paddr_t addr;
 
 	#if OPT_A3
@@ -214,6 +219,8 @@ getppages(unsigned long npages)
 vaddr_t 
 alloc_kpages(int npages)
 {
+
+	kprintf("%s \n", "i am in alloc_kpages");
 	paddr_t pa;
 	pa = getppages(npages);
 	if (pa==0) {
@@ -226,6 +233,8 @@ void
 free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
+
+	kprintf("%s \n", "i am in free_kpages");
 
 	#if OPT_A3
 
@@ -282,6 +291,8 @@ vm_tlbshootdown(const struct tlbshootdown *ts)
 int
 vm_fault(int faulttype, vaddr_t faultaddress)
 {
+
+	kprintf("%s \n", "i am in vm_fault");
 	vaddr_t vbase1, vtop1, vbase2, vtop2, stackbase, stacktop;
 	paddr_t paddr;
 	int i;
@@ -473,6 +484,8 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 struct addrspace *
 as_create(void)
 {
+
+	kprintf("%s \n", "i am in as_create");
 	struct addrspace *as = kmalloc(sizeof(struct addrspace));
 	if (as==NULL) {
 		return NULL;
@@ -507,6 +520,8 @@ as_create(void)
 void
 as_destroy(struct addrspace *as)
 {
+
+	kprintf("%s \n", "i am in as_destroy");
 	#if OPT_A3
 	for (size_t i = 0; i < as -> as_npages1; i++){
 
@@ -566,6 +581,9 @@ int
 as_define_region(struct addrspace *as, vaddr_t vaddr, size_t sz,
 		 int readable, int writeable, int executable)
 {
+
+	kprintf("%s \n", "i am in as_define_region");
+
 	size_t npages; 
 
 	/* Align the region. First, the base... */
@@ -622,6 +640,7 @@ int
 as_prepare_load(struct addrspace *as)
 {
 
+	kprintf("%s \n", "i am in as_prepare_load");
 	#if OPT_A3
 
 	// KASSERT(as->as_pbase1 == NULL);
@@ -715,6 +734,8 @@ as_complete_load(struct addrspace *as)
 int
 as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 {
+
+	kprintf("%s \n", "i am in as_define_stack");
 	#if OPT_A3
 	KASSERT(as->as_stackpbase != NULL);
 	#else
@@ -728,6 +749,8 @@ as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 int
 as_copy(struct addrspace *old, struct addrspace **ret)
 {
+
+	kprintf("%s \n", "i am in as_copy");
 	struct addrspace *new;
 
 	new = as_create();
