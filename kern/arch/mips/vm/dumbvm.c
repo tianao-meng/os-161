@@ -152,7 +152,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 		}
 
-		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + ((page_start - 1) * PAGE_SIZE) + 1);
+		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + ((page_start - 1) * PAGE_SIZE));
 
 
 	}
@@ -223,7 +223,7 @@ free_kpages(vaddr_t addr)
 
 	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
 	unsigned long cur_page = page_belong;
-	unsigned long alloced = * (int *)(coremap_start + cur_page * sizeof(int));
+	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page]
 
 	while (alloced == (cur_page + 1)){
 
