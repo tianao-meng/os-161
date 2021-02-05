@@ -157,6 +157,12 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 
 		}
+		kprintf("%s\n", "steal memory, and print the map");
+		for (unsigned long i = 0; i < coremap_npages ; i++){
+
+			kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+			
+		}
 
 		return (paddr_t)(coremap_start + (coremap_npages * PAGE_SIZE) + ((page_start - 1) * PAGE_SIZE));
 
@@ -164,12 +170,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 	}
 
 
-	kprintf("%s\n", "steal memory, and print the map");
-	for (unsigned long i = 0; i < coremap_npages ; i++){
 
-		kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
-		
-	}
 
 }
 
