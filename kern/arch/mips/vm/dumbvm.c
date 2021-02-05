@@ -598,9 +598,19 @@ as_zero_region(paddr_t paddr, unsigned npages)
 int
 as_prepare_load(struct addrspace *as)
 {
+
+	#if OPT_A3
+
+	KASSERT(as->as_pbase1 == NULL);
+	KASSERT(as->as_pbase2 == NULL);
+	KASSERT(as->as_stackpbase == NULL);
+
+	#else
+
 	KASSERT(as->as_pbase1 == 0);
 	KASSERT(as->as_pbase2 == 0);
 	KASSERT(as->as_stackpbase == 0);
+	#endif
 
 
 	#if OPT_A3
