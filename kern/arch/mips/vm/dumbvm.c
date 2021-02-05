@@ -112,10 +112,11 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 				page_start = cur_page + 1;
 				npage_can_allocate ++;
-				continue;
 
+			} else {
+				npage_can_allocate ++;
 			}
-			npage_can_allocate ++;
+			
 
 		} else {
 
