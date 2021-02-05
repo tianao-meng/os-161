@@ -354,13 +354,13 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	#if OPT_A3
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
-		paddr = * (paddr_t *)as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
+		paddr = as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE];
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
-		paddr = * (paddr_t *)as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
+		paddr = as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE];
 	}
 	else if (faultaddress >= stackbase && faultaddress < stacktop) {
-		paddr = * (paddr_t *)as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
+		paddr = as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE];
 	}
 	else {
 		return EFAULT;
