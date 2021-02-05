@@ -195,7 +195,7 @@ paddr_t vm_stealmem(unsigned long npages) {
           temp++;
         }
         unsigned int ps = potential_start;
-        unsigned long np = numpages;
+        unsigned long np = npages;
         (void)ps;
         (void)np;
         return (potential_start + 1) * PAGE_SIZE + coremap_start;
