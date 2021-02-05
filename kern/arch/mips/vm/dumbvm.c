@@ -469,6 +469,7 @@ as_create(void)
 	as->as_pbase2 = NULL;
 	as->as_npages2 = 0;
 	as->as_stackpbase = NULL;
+	as -> in_load_elf = false;
 
 	#else
 
@@ -491,19 +492,19 @@ as_destroy(struct addrspace *as)
 	#if OPT_A3
 	for (size_t i = 0; i < as -> as_npages1; i++){
 
-		free_kpages(as -> as_pbase1[i]); 
+		free_kpages(PADDR_TO_KVADDR(as->as_pbase1[i]); 
 
 	}
 
 	for (size_t i = 0; i < as -> as_npages2; i++){
 
-		free_kpages(as -> as_pbase2[i]); 
+		free_kpages(PADDR_TO_KVADDR(as->as_pbase2[i])); 
 
 	}
 
 	for (size_t i = 0; i < DUMBVM_STACKPAGES; i++){
 
-		free_kpages(as -> as_stackpbase[i]); 
+		free_kpages(PADDR_TO_KVADDR(as->as_stackpbase[i])); 
 
 	}
 
