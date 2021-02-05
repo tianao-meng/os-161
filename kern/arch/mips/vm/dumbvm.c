@@ -601,9 +601,9 @@ as_prepare_load(struct addrspace *as)
 
 	#if OPT_A3
 
-	KASSERT(as->as_pbase1 == NULL);
-	KASSERT(as->as_pbase2 == NULL);
-	KASSERT(as->as_stackpbase == NULL);
+	// KASSERT(as->as_pbase1 == NULL);
+	// KASSERT(as->as_pbase2 == NULL);
+	// KASSERT(as->as_stackpbase == NULL);
 
 	#else
 
