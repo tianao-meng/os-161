@@ -492,7 +492,7 @@ as_destroy(struct addrspace *as)
 	#if OPT_A3
 	for (size_t i = 0; i < as -> as_npages1; i++){
 
-		free_kpages(PADDR_TO_KVADDR(as->as_pbase1[i]); 
+		free_kpages(PADDR_TO_KVADDR(as->as_pbase1[i])); 
 
 	}
 
