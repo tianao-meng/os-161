@@ -133,7 +133,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 	}
 
-	if (npage_can_allocate == 0){
+	if (npage_can_allocate != npages){
 		return 0;
 	} else {
 
@@ -623,59 +623,37 @@ as_prepare_load(struct addrspace *as)
 
 	#if OPT_A3
 
-	// for (size_t i = 0; i < as -> as_npages1; i ++){
+	for (size_t i = 0; i < as -> as_npages1; i ++){
 
-	// 	as->as_pbase1[i] = getppages(1);
-	// 	if (as->as_pbase1[i] == 0) {
-	// 		return ENOMEM;
-	// 	}
-	// 	as_zero_region(as->as_pbase1[i], 1);
+		as->as_pbase1[i] = getppages(1);
+		if (as->as_pbase1[i] == 0) {
+			return ENOMEM;
+		}
+		as_zero_region(as->as_pbase1[i], 1);
 
-	// }
-
-
-	// for (size_t i = 0; i < as -> as_npages2; i ++){
-
-	// 	as->as_pbase2[i] = getppages(1);
-	// 	if (as->as_pbase2[i] == 0) {
-	// 		return ENOMEM;
-	// 	}
-	// 	as_zero_region(as->as_pbase2[i], 1);
-
-	// }
-		
-	// as->as_stackpbase = kmalloc(sizeof(paddr_t) * DUMBVM_STACKPAGES);
-		
-	// for (size_t i = 0; i < DUMBVM_STACKPAGES; i ++){
-
-	// 	as->as_stackpbase[i] = getppages(1);
-	// 	if (as->as_stackpbase[i] == 0) {
-	// 		return ENOMEM;
-	// 	}
-	// 	as_zero_region(as->as_stackpbase[i], 1);
-
-	// }
-	for (unsigned int i = 0; i < as->as_npages1; i++) {
-	paddr_t adr = getppages(1);
-	if (adr == 0) return ENOMEM;
-	as->as_pbase1[i] = adr;
-	as_zero_region(as->as_pbase1[i], 1);
 	}
-	for (unsigned int i = 0; i < as->as_npages2; i++) {
-	paddr_t adr = getppages(1);
-	if (adr == 0) return ENOMEM;
-	as->as_pbase2[i] = adr;
-	as_zero_region(as->as_pbase2[i], 1);
+
+
+	for (size_t i = 0; i < as -> as_npages2; i ++){
+
+		as->as_pbase2[i] = getppages(1);
+		if (as->as_pbase2[i] == 0) {
+			return ENOMEM;
+		}
+		as_zero_region(as->as_pbase2[i], 1);
+
 	}
+		
 	as->as_stackpbase = kmalloc(sizeof(paddr_t) * DUMBVM_STACKPAGES);
-	if (as->as_stackpbase == NULL) {
-		return ENOMEM;
-	}
-	for (unsigned int i = 0; i < DUMBVM_STACKPAGES; i++) {
-	paddr_t adr = getppages(1);
-	if (adr == 0) return ENOMEM;
-	as->as_stackpbase[i] = adr;
-	as_zero_region(as->as_stackpbase[i], 1);
+		
+	for (size_t i = 0; i < DUMBVM_STACKPAGES; i ++){
+
+		as->as_stackpbase[i] = getppages(1);
+		if (as->as_stackpbase[i] == 0) {
+			return ENOMEM;
+		}
+		as_zero_region(as->as_stackpbase[i], 1);
+
 	}
 
 
