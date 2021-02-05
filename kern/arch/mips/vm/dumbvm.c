@@ -138,9 +138,9 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 			if ((cur_page + 1) == page_start){
 
-				for (unsigned long npages_to_allocate = cur_page; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
+				for (unsigned long npages_to_allocate = 0; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
 
-					((int *) PADDR_TO_KVADDR(coremap_start))[npages_to_allocate] = npages_to_allocate + 1;
+					((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate] = npages_to_allocate + 1;
 					//*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
 
 				}
@@ -603,7 +603,7 @@ as_prepare_load(struct addrspace *as)
 
 	// KASSERT(as->as_pbase1 == NULL);
 	// KASSERT(as->as_pbase2 == NULL);
-	// KASSERT(as->as_stackpbase == NULL);
+	// KASSERT(as->as_stackppbase == NULL);
 
 	#else
 
