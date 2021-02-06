@@ -314,6 +314,7 @@ free_kpages(vaddr_t addr)
     /* (void) p; */
     /* (void) sz; */
     KASSERT(temp < npages_available);
+    kprintf(("%s%d\n", "alloced: ",(int*) PADDR_TO_KVADDR(coremap_start))[temp]);
     ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
     kprintf("%s%d\n", "page_to_delete: ",(int)(temp + 1));
     temp++;
