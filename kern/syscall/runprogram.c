@@ -106,8 +106,8 @@ runprogram(char *progname, char ** args_kspace)
 
   //HARD PART: COPY ARGS TO USER STACK
 
-	size_t num_args= 0;
-	for (size_t i = 0; args_kspace[i] != NULL; i++){
+	int num_args= 0;
+	for (int i = 0; args_kspace[i] != NULL; i++){
 
 		num_args ++;
 
