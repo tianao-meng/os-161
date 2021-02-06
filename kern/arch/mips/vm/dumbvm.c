@@ -398,6 +398,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	stacktop = USERSTACK;
 
 	bool code_seg = false;
+	 bool loadelf_complete = !as->in_load_elf;
 	#if OPT_A3
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
