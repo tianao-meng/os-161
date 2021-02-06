@@ -113,7 +113,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 		//alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
 
 		if (alloced == 0){
-			kprintf("%s%d\n","cur_page: " , (int)cur_page);
+			//kprintf("%s%d\n","cur_page: " , (int)cur_page);
 			if (npage_can_allocate == 0){
 
 				page_start = cur_page + 1;
@@ -136,7 +136,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 		}
 
 	}
-
+	kprintf("%s%d\n","page_start: " , (int)page_start);
 	if (npage_can_allocate != npages){
 		return 0;
 	} else {
