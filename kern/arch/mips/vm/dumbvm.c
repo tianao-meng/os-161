@@ -265,6 +265,7 @@ free_kpages(vaddr_t addr)
 	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 	unsigned long free_start = 0;
 
+	kprintf("%s%d\n", "alloed: ",alloed);
 	while (alloced == (free_start + 1)){
 
 		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
@@ -279,16 +280,16 @@ free_kpages(vaddr_t addr)
 
 	kprintf("%s\n", "free memory, and print the map");
 
-	int count_0 = 0;
+	int count_1 = 0;
 	for (unsigned long i = 0; i < npages_available ; i++){
 
 		if ((((int *) PADDR_TO_KVADDR(coremap_start))[i] == 0) ){
-			count_0 ++;
+			count_1 ++;
 		}
 		
 		
 	}
-	kprintf("%s%d\n", "count_0: ",count_0);
+	kprintf("%s%d\n", "count_1: ",count_1);
 	spinlock_release(&coremap_lock);
 
 	#else 
