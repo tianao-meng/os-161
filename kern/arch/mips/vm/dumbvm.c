@@ -77,7 +77,7 @@ vm_bootstrap(void)
 
 	npages_available = npages_available - coremap_npages;
 	kprintf("%s%d", "npages_available: ", (int)npages_available);
-	kprintf("%s%d", "coremap_npage: ", (int)coremap_npage);
+	kprintf("%s%d", "coremap_npages: ", (int)coremap_npages);
 
 	for (unsigned long i = 0; i < npages_available; i++){
 
