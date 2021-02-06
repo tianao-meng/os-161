@@ -413,8 +413,8 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 		return EFAULT;
 	}
 
-	printf("%s%p\n", "paddr: ", paddr);
-	printf("%s%p\n", "faultaddress: ", faultaddress);
+	kprintf("%s%p\n", "paddr: ", paddr);
+	kprintf("%s%p\n", "faultaddress: ", faultaddress);
 
 	#else
 
