@@ -253,36 +253,36 @@ alloc_kpages(int npages)
 void 
 free_kpages(vaddr_t addr)
 {
-	// /* nothing - leak the memory. */
+	/* nothing - leak the memory. */
 
-	// kprintf("%s \n", "i am in free_kpages");
+	//kprintf("%s \n", "i am in free_kpages");
 
-	// #if OPT_A3
+	#if OPT_A3
 
-	// paddr_t phaddr = addr - MIPS_KSEG0;
-	// spinlock_acquire(&coremap_lock);
+	paddr_t phaddr = addr - MIPS_KSEG0;
+	spinlock_acquire(&coremap_lock);
 
-	// unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
-	// unsigned long cur_page = page_belong;
-	// kprintf("%s%d\n", "page_to_delete: ",(int)(cur_page + 1));
-	// unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
-	// unsigned long free_start = 0;
+	unsigned long page_belong = ((phaddr - (coremap_start + (coremap_npages * PAGE_SIZE)))/PAGE_SIZE);
+	unsigned long cur_page = page_belong;
+	kprintf("%s%d\n", "page_to_delete: ",(int)(cur_page + 1));
+	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+	unsigned long free_start = 0;
 
-	
-	// while (alloced == (free_start + 1)){
+	kprintf("%s%d\n", "alloed: ",(int)alloced);
+	while (alloced == (free_start + 1)){
 
-	// 	((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
-	// 	//* (int *)(coremap_start + cur_page * sizeof(int)) = 0;
+		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
+		//* (int *)(coremap_start + cur_page * sizeof(int)) = 0;
 
-	// 	cur_page ++;
-	// 	free_start++;
-	// 	alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
-	// 	kprintf("%s%d\n", "alloed: ",(int)alloced);
-	// 	//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
+		cur_page ++;
+		free_start++;
+		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+		
+		//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
-	// }
+	}
 
-	// kprintf("%s\n", "free memory, and print the map");
+	kprintf("%s\n", "free memory, and print the map");
 
 	// int count_1 = 0;
 	// for (unsigned long i = 0; i < npages_available ; i++){
@@ -294,42 +294,13 @@ free_kpages(vaddr_t addr)
 		
 	// }
 	// kprintf("%s%d\n", "count_1: ",count_1);
-	// spinlock_release(&coremap_lock);
+	spinlock_release(&coremap_lock);
 
-	// #else 
+	#else 
 
-	// (void)addr;
-
-	// #endif
-#if OPT_A3
-  paddr_t p_addr = KVADDR_TO_PADDR(addr);
-
-  spinlock_acquire(&coremap_lock);
-
-    unsigned int temp = ((p_addr - coremap_start) / PAGE_SIZE) - 1;
-    /* paddr_t cs = coremap_start; */
-    /* paddr_t p = p_addr; */
-    /* unsigned int sz = coremap_size; */
-    /* (void) cs; */
-    /* (void) p; */
-    /* (void) sz; */
-    KASSERT(temp < npages_available);
-    kprintf("%s%d\n", "alloced: ",((int*) PADDR_TO_KVADDR(coremap_start))[temp]);
-    ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
-    kprintf("%s%d\n", "page_to_delete: ",(int)(temp + 1));
-    temp++;
-    int cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-
-    while (cur != 0 && cur != 1) {
-      ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
-      temp++;
-      cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
-    }
-
-  spinlock_release(&coremap_lock);
-#else
 	(void)addr;
-#endif
+
+	#endif
 
 	
 }
