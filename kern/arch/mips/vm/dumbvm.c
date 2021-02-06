@@ -119,7 +119,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 
 		//alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
-
+		kprintf("%s%d%d\n","cur_page, alloced: " , (int)cur_page, alloced);
 		if (alloced == 0){
 			//kprintf("%s%d\n","cur_page: " , (int)cur_page);
 			if (npage_can_allocate == 0){
