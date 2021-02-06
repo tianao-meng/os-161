@@ -277,11 +277,17 @@ free_kpages(vaddr_t addr)
 	}
 
 	kprintf("%s\n", "free memory, and print the map");
-	for (unsigned long i = 0; i < coremap_npages ; i++){
 
-		kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+	int count_1 = 0;
+	for (unsigned long i = 0; i < npages_available ; i++){
+
+		if (((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1){
+			count_1 ++;
+		}
+		
 		
 	}
+	kprintf("%s%d\n", "count_1: ",count_1);
 	spinlock_release(&coremap_lock);
 
 	#else 
