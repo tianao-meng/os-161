@@ -112,7 +112,7 @@ runprogram(char *progname, char ** args_kspace)
 		execv_args_len ++;
 
 	}
-	kprintf("%s %d", "execv_args_len: ", execv_args_len);
+	kprintf("%s %d\n", "execv_args_len: ", execv_args_len);
 
 	vaddr_t args_userspace[execv_args_len + 1];
 
