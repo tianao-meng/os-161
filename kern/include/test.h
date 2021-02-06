@@ -83,7 +83,7 @@ int nettest(int, char **);
 
 #if OPT_A2
 
-int runprogram(char *progname, char ** args_kspace);
+int runprogram(char *progname, char ** args_kspace, unsigned long execv_args_len);
 
 #else
 /* Routine for running a user-level program. */

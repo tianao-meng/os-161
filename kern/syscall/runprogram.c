@@ -58,7 +58,7 @@
 
 #if OPT_A2
 int
-runprogram(char *progname, char ** args_kspace)
+runprogram(char *progname, char ** args_kspace, unsigned long execv_args_len)
 {	
 	//panic("i am in runprogram");
 	struct addrspace *as;
@@ -106,17 +106,17 @@ runprogram(char *progname, char ** args_kspace)
 
 
 
-	size_t execv_args_len = 0;
-	for (size_t i = 0; args_kspace[i] != NULL; i++){
+	// size_t execv_args_len = 0;
+	// for (size_t i = 0; args_kspace[i] != NULL; i++){
 
-		execv_args_len ++;
+	// 	execv_args_len ++;
 
-	}
-	kprintf("%s %d\n", "execv_args_len: ", execv_args_len);
+	// }
+	// kprintf("%s %d\n", "execv_args_len: ", execv_args_len);
 
-	for (size_t i = 0; i < execv_args_len; i++){
-		kprintf("%s %s\n", "args_kspace[i]: ", args_kspace[i]);
-	}
+	// for (size_t i = 0; i < execv_args_len; i++){
+	// 	kprintf("%s %s\n", "args_kspace[i]: ", args_kspace[i]);
+	// }
 
 	vaddr_t args_userspace[execv_args_len + 1];
 
