@@ -576,6 +576,9 @@ as_destroy(struct addrspace *as)
 
 	}
 
+	kfree(as -> as_pbase1);
+	kfree(as -> as_pbase2);
+	kfree(as -> as_stackpbase);
 	kfree(as);
 	#else
 	kfree(as);
@@ -779,7 +782,7 @@ as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 	#endif
 
 	*stackptr = USERSTACK;
-	kprintf("%s \n", "i am out as_define_stack");
+	//kprintf("%s \n", "i am out as_define_stack");
 	return 0;
 }
 
