@@ -313,7 +313,7 @@ free_kpages(vaddr_t addr)
     /* (void) cs; */
     /* (void) p; */
     /* (void) sz; */
-    KASSERT(temp < coremap_size);
+    KASSERT(temp < npages_available);
     ((int*) PADDR_TO_KVADDR(coremap_start))[temp] = 0;
     temp++;
     int cur = ((int*) PADDR_TO_KVADDR(coremap_start))[temp];
