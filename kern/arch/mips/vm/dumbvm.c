@@ -255,7 +255,7 @@ free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
 
-	kprintf("%s %p\n", "vaddr_t addr: ", vaddr_t addr);
+	kprintf("%s %p\n", "vaddr_t addr: ", (vaddr_t) addr);
 
 	#if OPT_A3
 	paddr_t phaddr = addr - MIPS_KSEG0;
