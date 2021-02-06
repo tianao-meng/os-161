@@ -575,7 +575,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 #if OPT_A3
   bool code_seg = false;
-  bool loadelf_complete = as->loadelf_complete;
+  bool loadelf_complete = as->in_load_elf;
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
 		paddr = (faultaddress - vbase1) + as->as_pbase1[0];
