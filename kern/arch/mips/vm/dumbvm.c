@@ -282,7 +282,7 @@ free_kpages(vaddr_t addr)
 	int count_1 = 0;
 	for (unsigned long i = 0; i < npages_available ; i++){
 
-		if (((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1){
+		if ((((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1) ||(((int *) PADDR_TO_KVADDR(coremap_start))[i] == 2) ){
 			count_1 ++;
 		}
 		
