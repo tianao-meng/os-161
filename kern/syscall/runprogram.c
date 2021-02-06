@@ -105,7 +105,7 @@ runprogram(char *progname, char ** args_kspace)
 	}
 
   //HARD PART: COPY ARGS TO USER STACK
-  char ** args_kernel = args;
+  char ** args_kernel = args_kspace;
   vaddr_t temp_stack_ptr = stackptr;
   vaddr_t *stack_args = kmalloc((num_args + 1) * sizeof(vaddr_t));
 
