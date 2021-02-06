@@ -794,7 +794,7 @@ int
 as_copy(struct addrspace *old, struct addrspace **ret)
 {
 
-	kprintf("%s \n", "i am in as_copy");
+	//kprintf("%s \n", "i am in as_copy");
 	struct addrspace *new;
 
 	new = as_create();
