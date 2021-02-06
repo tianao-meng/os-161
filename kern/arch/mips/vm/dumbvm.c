@@ -414,7 +414,7 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	// }
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
 		paddr = (faultaddress - vbase1) + as->as_pbase1[0];
-    code_seg = true;
+    //code_seg = true;
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
 		paddr = (faultaddress - vbase2) + as->as_pbase2[0];
