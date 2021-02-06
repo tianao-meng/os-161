@@ -255,10 +255,9 @@ free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
 
-	//kprintf("%s \n", "i am in free_kpages");
+	kprintf("%s %p\n", "vaddr_t addr: ", vaddr_t addr);
 
 	#if OPT_A3
-
 	paddr_t phaddr = addr - MIPS_KSEG0;
 	spinlock_acquire(&coremap_lock);
 
