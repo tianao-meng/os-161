@@ -104,80 +104,46 @@ runprogram(char *progname, char ** args_kspace)
 		return result;
 	}
 
-  //HARD PART: COPY ARGS TO USER STACK
 
-	int num_args= 0;
-	for (int i = 0; args_kspace[i] != NULL; i++){
 
-		num_args ++;
+	size_t execv_args_len = 0;
+	for (size_t i = 0; args_kspace[i] != NULL; i++){
+
+		execv_args_len ++;
 
 	}
-  char ** args_kernel = args_kspace;
-  vaddr_t temp_stack_ptr = stackptr;
-  vaddr_t *stack_args = kmalloc((num_args + 1) * sizeof(vaddr_t));
 
-  for (int i = num_args; i >= 0; i--) {
-    if (i == num_args) {
-      stack_args[i] = (vaddr_t) NULL;
-      continue;
-    }
-    size_t arg_length = ROUNDUP(strlen(args_kernel[i]) + 1, 4);
-    size_t arg_size = arg_length * sizeof(char);
-    temp_stack_ptr -= arg_size;
-    int err = copyout((void *) args_kernel[i], (userptr_t) temp_stack_ptr, arg_length);
-    KASSERT(err == 0);
-    stack_args[i] = temp_stack_ptr;
-  }
+	vaddr_t args_userspace[execv_args_len + 1];
 
-  for (int i = num_args; i >= 0; i--) {
-    size_t str_pointer_size = sizeof(vaddr_t);
-    temp_stack_ptr -= str_pointer_size;
-    int err = copyout((void *) &stack_args[i], (userptr_t) temp_stack_ptr, str_pointer_size);
-    KASSERT(err == 0);
-  }
-  // HARD PART: COPY ARGS TO USER STACK
-	enter_new_process(num_args /*argc*/, (userptr_t) temp_stack_ptr /*userspace addr of argv*/,
-			  ROUNDUP(temp_stack_ptr, 8), entrypoint);
+	size_t stackptr_move;
+	for (size_t i = 0; i < execv_args_len; i++){
 
+		stackptr_move = ROUNDUP(strlen(args_kspace[i]),8);
+		stackptr -= stackptr_move;
+		result = copyoutstr(args_kspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
+		args_userspace[i] = stackptr;
 
-	// size_t execv_args_len = 0;
-	// for (size_t i = 0; args_kspace[i] != NULL; i++){
+		if (result){
 
-	// 	execv_args_len ++;
+		  return result;
 
-	// }
+	}
 
-	// vaddr_t args_userspace[execv_args_len + 1];
+	}
+	args_userspace[execv_args_len] = (vaddr_t)NULL;
 
-	// size_t stackptr_move;
-	// for (size_t i = 0; i < execv_args_len; i++){
+	stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
+	stackptr -= stackptr_move;
+	result = copyout(args_userspace, (userptr_t) stackptr, stackptr_move);
+	if (result){
 
-	// 	stackptr_move = ROUNDUP(strlen(args_kspace[i]),8);
-	// 	stackptr -= stackptr_move;
-	// 	result = copyoutstr(args_kspace[i], (userptr_t) stackptr, ARG_MAX, &stackptr_move);
-	// 	args_userspace[i] = stackptr;
+	  return result;
 
-	// 	if (result){
+	}
 
-	// 	  return result;
-
-	// }
-
-	// }
-	// args_userspace[execv_args_len] = (vaddr_t)NULL;
-
-	// stackptr_move = ROUNDUP(((execv_args_len + 1) * 4),8);
-	// stackptr -= stackptr_move;
-	// result = copyout(args_userspace, (userptr_t) stackptr, stackptr_move);
-	// if (result){
-
-	//   return result;
-
-	// }
-
-	// /* Warp to user mode. */
-	// enter_new_process(execv_args_len /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
-	//     stackptr, entrypoint);
+	/* Warp to user mode. */
+	enter_new_process(execv_args_len /*argc*/,  (userptr_t)stackptr/*userspace addr of argv*/,
+	    stackptr, entrypoint);
 
 	/* enter_new_process does not return. */
 	//panic("enter_new_process returned\n");
