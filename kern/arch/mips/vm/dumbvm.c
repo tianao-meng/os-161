@@ -67,7 +67,7 @@ void
 vm_bootstrap(void)
 {	
 
-	kprintf("%s \n", "i am in vm_bootstrap");
+	//kprintf("%s \n", "i am in vm_bootstrap");
 	// get the available physical length after bootstrap
 	ram_getsize(&coremap_start, &coremap_end);
 
@@ -621,7 +621,7 @@ as_define_region(struct addrspace *as, vaddr_t vaddr, size_t sz,
 		 int readable, int writeable, int executable)
 {
 
-	kprintf("%s \n", "i am in as_define_region");
+	//kprintf("%s \n", "i am in as_define_region");
 
 	size_t npages; 
 
@@ -679,7 +679,7 @@ int
 as_prepare_load(struct addrspace *as)
 {
 
-	kprintf("%s \n", "i am in as_prepare_load");
+	//kprintf("%s \n", "i am in as_prepare_load");
 	#if OPT_A3
 
 	// KASSERT(as->as_pbase1 == NULL);
@@ -766,7 +766,7 @@ as_prepare_load(struct addrspace *as)
 int
 as_complete_load(struct addrspace *as)
 {
-	kprintf("%s \n", "as_complete_load");
+	//kprintf("%s \n", "as_complete_load");
 	(void)as;
 	#if OPT_A3
 	as -> in_load_elf = false;
