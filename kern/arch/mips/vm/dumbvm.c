@@ -265,7 +265,7 @@ free_kpages(vaddr_t addr)
 	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 	unsigned long free_start = 0;
 
-	kprintf("%s%d\n", "alloed: ",(int)alloced);
+	
 	while (alloced == (free_start + 1)){
 
 		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
@@ -274,6 +274,7 @@ free_kpages(vaddr_t addr)
 		cur_page ++;
 		free_start++;
 		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
+		kprintf("%s%d\n", "alloed: ",(int)alloced);
 		//alloced = * (int *)(coremap_start + cur_page * sizeof(int));
 
 	}
@@ -283,7 +284,7 @@ free_kpages(vaddr_t addr)
 	int count_1 = 0;
 	for (unsigned long i = 0; i < npages_available ; i++){
 
-		if ((((int *) PADDR_TO_KVADDR(coremap_start))[i] == 0) ){
+		if ((((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1) ){
 			count_1 ++;
 		}
 		
