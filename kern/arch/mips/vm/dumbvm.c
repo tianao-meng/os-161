@@ -400,33 +400,23 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 	#if OPT_A3
 
-	// if (faultaddress >= vbase1 && faultaddress < vtop1) {
-	// 	paddr = as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE] + (faultaddress - (vbase1 + (((faultaddress - vbase1) / PAGE_SIZE) * PAGE_SIZE)));
-	// }
-	// else if (faultaddress >= vbase2 && faultaddress < vtop2) {
-	// 	paddr = as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE] + (faultaddress - (vbase2 + (((faultaddress - vbase2) / PAGE_SIZE) * PAGE_SIZE)));
-	// }
-	// else if (faultaddress >= stackbase && faultaddress < stacktop) {
-	// 	paddr = as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE] + (faultaddress - (stackbase + (((faultaddress - stackbase) / PAGE_SIZE) * PAGE_SIZE)));
-	// }
-	// else {
-	// 	return EFAULT;
-	// }
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
-		paddr = (faultaddress - vbase1) + as->as_pbase1[0];
-    //code_seg = true;
+		paddr = as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE] + (faultaddress - (vbase1 + (((faultaddress - vbase1) / PAGE_SIZE) * PAGE_SIZE)));
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
-		paddr = (faultaddress - vbase2) + as->as_pbase2[0];
+		paddr = as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE] + (faultaddress - (vbase2 + (((faultaddress - vbase2) / PAGE_SIZE) * PAGE_SIZE)));
 	}
 	else if (faultaddress >= stackbase && faultaddress < stacktop) {
-		paddr = (faultaddress - stackbase) + as->as_stackpbase[0];
+		paddr = as->as_stackpbase [ (faultaddress - stackbase) / PAGE_SIZE] + (faultaddress - (stackbase + (((faultaddress - stackbase) / PAGE_SIZE) * PAGE_SIZE)));
 	}
 	else {
 		return EFAULT;
 	}
 
 	#else
+
+	printf("%s%p\n", "paddr: ", paddr);
+	printf("%s%p\n", "faultaddress: ", faultaddress);
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
 		paddr = (faultaddress - vbase1) + as->as_pbase1;
