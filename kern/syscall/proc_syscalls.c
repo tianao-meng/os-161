@@ -118,6 +118,8 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   }
 
+  kprintf("%s %d", "execv_args_len: ", execv_args_len);
+
   //execv_args_len ++; // for NULL
 
   char ** args_kspace = kmalloc(sizeof(char *) * (execv_args_len + 1));
