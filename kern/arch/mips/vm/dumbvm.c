@@ -83,6 +83,12 @@ vm_bootstrap(void)
 
 	}
 
+	for (unsigned long i = 0; i < npages_available ; i++){
+		
+		if(((int *) PADDR_TO_KVADDR(coremap_start))[i] == 0){
+			kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+		}
+
 	coremap_ready= true;
 
 	/* Do nothing. */
