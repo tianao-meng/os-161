@@ -144,7 +144,9 @@ paddr_t vm_stealmem(unsigned long npages) {
 		}
 
 	}
-	kprintf("%s%d\n","page_start: " , (int)page_start);
+	//kprintf("%s%d\n","page_start: " , (int)page_start);
+	kprintf("%s%d\n","npage_can_allocate: " , (int)npage_can_allocate);
+	kprintf("%s%d\n","npages: " , (int)npages);
 	if (npage_can_allocate != npages){
 		return 0;
 	} else {
@@ -156,7 +158,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 				for (unsigned long npages_to_allocate = 0; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
 
 					((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate] = ((int)npages_to_allocate + 1);
-					kprintf("%s%d\n","cur_page + npages_to_allocate : " , ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate]);
+					//kprintf("%s%d\n","cur_page + npages_to_allocate : " , ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate]);
 					//*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
 
 				}
