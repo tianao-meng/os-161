@@ -520,7 +520,7 @@ struct addrspace *
 as_create(void)
 {
 
-	//kprintf("%s \n", "i am in as_create");
+	kprintf("%s \n", "i am in as_create");
 	struct addrspace *as = kmalloc(sizeof(struct addrspace));
 	if (as==NULL) {
 		return NULL;
@@ -585,7 +585,7 @@ as_destroy(struct addrspace *as)
 void
 as_activate(void)
 {
-	kprintf("%s \n", "i am in as_activate");
+	//kprintf("%s \n", "i am in as_activate");
 	int i, spl;
 	struct addrspace *as;
 
