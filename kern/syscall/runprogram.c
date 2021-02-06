@@ -114,7 +114,7 @@ runprogram(char *progname, char ** args_kspace)
 	}
 
 	//vaddr_t args_userspace[execv_args_len + 1];
-	vaddr_t *args_userspace = kmalloc((num_args + 1) * sizeof(vaddr_t));
+	vaddr_t * args_userspace = kmalloc((execv_args_len + 1) * sizeof(vaddr_t));
 	size_t stackptr_move;
 	for (size_t i = 0; i < execv_args_len; i++){
 
