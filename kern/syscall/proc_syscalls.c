@@ -118,7 +118,7 @@ int sys_execv(const char *progname_uspace, char ** args_uspace){
 
   }
 
-  kprintf("%s %d", "execv_args_len: ", execv_args_len);
+  //kprintf("%s %d", "execv_args_len: ", execv_args_len);
 
   //execv_args_len ++; // for NULL
 
