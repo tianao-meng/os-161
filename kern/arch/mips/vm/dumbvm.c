@@ -397,11 +397,12 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	stackbase = USERSTACK - DUMBVM_STACKPAGES * PAGE_SIZE;
 	stacktop = USERSTACK;
 
-
+	bool code_seg = false;
 	#if OPT_A3
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
 		paddr = as->as_pbase1[(faultaddress - vbase1) / PAGE_SIZE] + (faultaddress - (vbase1 + (((faultaddress - vbase1) / PAGE_SIZE) * PAGE_SIZE)));
+		code_seg= true;
 	}
 	else if (faultaddress >= vbase2 && faultaddress < vtop2) {
 		paddr = as->as_pbase2[(faultaddress - vbase2) / PAGE_SIZE] + (faultaddress - (vbase2 + (((faultaddress - vbase2) / PAGE_SIZE) * PAGE_SIZE)));
@@ -432,10 +433,79 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	}
 
 	#endif
+// 	/* make sure it's page-aligned */
+// 	KASSERT((paddr & PAGE_FRAME) == paddr);
+// 	// kprintf("%s%p\n", "paddr: ", (void *)paddr);
+// 	// kprintf("%s%p\n", "faultaddress: ", (void *)faultaddress);
+
+// 	/* Disable interrupts on this CPU while frobbing the TLB. */
+// 	spl = splhigh();
+
+// 	for (i=0; i<NUM_TLB; i++) {
+// 		tlb_read(&ehi, &elo, i);
+// 		if (elo & TLBLO_VALID) {
+// 			continue;
+// 		}
+
+// 	#if OPT_A3
+
+// 		if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
+
+
+// 			ehi = faultaddress;
+// 			elo = paddr | TLBLO_VALID;
+// 			DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
+// 			tlb_write(ehi, elo, i);
+// 			splx(spl);
+// 			return 0;
+
+// 		}
+
+// 		ehi = faultaddress;
+// 		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+// 		DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
+// 		tlb_write(ehi, elo, i);
+// 		splx(spl);
+// 		return 0;
+
+// 	#else
+// 		ehi = faultaddress;
+// 		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+// 		DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
+// 		tlb_write(ehi, elo, i);
+// 		splx(spl);
+// 		return 0;
+
+// 	#endif
+
+// 	}
+// #if OPT_A3
+
+// 	if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
+
+// 		ehi = faultaddress;
+// 		elo = paddr | TLBLO_VALID;
+// 		//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
+// 		tlb_random(ehi, elo);
+// 		splx(spl);
+// 		return 0;
+
+// 	}
+// 	ehi = faultaddress;
+// 	elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+// 	//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
+// 	tlb_random(ehi, elo);
+// 	splx(spl);
+// 	return 0;
+
+// #else
+// 	kprintf("dumbvm: Ran out of TLB entries - cannot handle page fault\n");
+// 	splx(spl);
+// 	return EFAULT;
+// #endif
+
 	/* make sure it's page-aligned */
 	KASSERT((paddr & PAGE_FRAME) == paddr);
-	// kprintf("%s%p\n", "paddr: ", (void *)paddr);
-	// kprintf("%s%p\n", "faultaddress: ", (void *)faultaddress);
 
 	/* Disable interrupts on this CPU while frobbing the TLB. */
 	spl = splhigh();
@@ -445,62 +515,23 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 		if (elo & TLBLO_VALID) {
 			continue;
 		}
-
-	#if OPT_A3
-
 		ehi = faultaddress;
-		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
-
-		if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
-
-
-			ehi = faultaddress;
-			//elo = paddr | TLBLO_VALID;
-			elo &= ~TLBLO_DIRTY;
-			DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
-			tlb_write(ehi, elo, i);
-			splx(spl);
-			return 0;
-
-		}
-
+    elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+  #if OPT_A3
+    if (code_seg && loadelf_complete) elo &= ~TLBLO_DIRTY;
+  #endif
 		DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
 		tlb_write(ehi, elo, i);
 		splx(spl);
 		return 0;
-
-	#else
-		ehi = faultaddress;
-		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
-		DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
-		tlb_write(ehi, elo, i);
-		splx(spl);
-		return 0;
-
-	#endif
-
 	}
 #if OPT_A3
-
-
-	ehi = faultaddress;
-	elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
-	if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
-
-		ehi = faultaddress;
-		//elo = paddr | TLBLO_VALID;
-		elo &= ~TLBLO_DIRTY;
-		//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
-		tlb_random(ehi, elo);
-		splx(spl);
-		return 0;
-
-	}
-	//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
-	tlb_random(ehi, elo);
-	splx(spl);
-	return 0;
-
+  ehi = faultaddress;
+  elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+  if (code_seg && loadelf_complete) elo &= ~TLBLO_DIRTY;
+  tlb_random(ehi, elo);
+  splx(spl);
+  return 0;
 #else
 	kprintf("dumbvm: Ran out of TLB entries - cannot handle page fault\n");
 	splx(spl);
