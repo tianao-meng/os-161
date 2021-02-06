@@ -779,6 +779,7 @@ as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 	#endif
 
 	*stackptr = USERSTACK;
+	kprintf("%s \n", "i am out as_define_stack");
 	return 0;
 }
 
