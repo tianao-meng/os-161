@@ -107,13 +107,13 @@ paddr_t vm_stealmem(unsigned long npages) {
 	//search for if we can find continuous space for the npages;
 	for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++) {
 
-		
+
 		alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 
 		//alloced = * (int *)(coremap_start + (cur_page * sizeof(int)));
 
 		if (alloced == 0){
-			printf("%s%d\n","cur_page: " , cur_page);
+			kprintf("%s%d\n","cur_page: " , cur_page);
 			if (npage_can_allocate == 0){
 
 				page_start = cur_page + 1;
