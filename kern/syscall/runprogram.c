@@ -285,6 +285,7 @@ runprogram(char *progname)
 	}
 #if OPT_A2
   //HARD PART: COPY ARGS TO USER STACK
+  kpringf("%s %d \n", "num_args: ", num_args)
   char ** args_kernel = args;
   vaddr_t temp_stack_ptr = stackptr;
   vaddr_t *stack_args = kmalloc((num_args + 1) * sizeof(vaddr_t));
