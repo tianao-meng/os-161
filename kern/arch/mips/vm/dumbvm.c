@@ -434,8 +434,8 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	#endif
 	/* make sure it's page-aligned */
 	KASSERT((paddr & PAGE_FRAME) == paddr);
-	kprintf("%s%p\n", "paddr: ", (void *)paddr);
-	kprintf("%s%p\n", "faultaddress: ", (void *)faultaddress);
+	// kprintf("%s%p\n", "paddr: ", (void *)paddr);
+	// kprintf("%s%p\n", "faultaddress: ", (void *)faultaddress);
 
 	/* Disable interrupts on this CPU while frobbing the TLB. */
 	spl = splhigh();
@@ -448,11 +448,15 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 	#if OPT_A3
 
+		ehi = faultaddress;
+		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
+
 		if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
 
 
 			ehi = faultaddress;
-			elo = paddr | TLBLO_VALID;
+			//elo = paddr | TLBLO_VALID;
+			elo &= ~TLBLO_DIRTY;
 			DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
 			tlb_write(ehi, elo, i);
 			splx(spl);
@@ -460,8 +464,6 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 
 		}
 
-		ehi = faultaddress;
-		elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
 		DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
 		tlb_write(ehi, elo, i);
 		splx(spl);
@@ -480,18 +482,20 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 	}
 #if OPT_A3
 
+
+	ehi = faultaddress;
+	elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
 	if (faultaddress >= vbase1 && faultaddress < vtop1 && as -> in_load_elf == false){
 
 		ehi = faultaddress;
-		elo = paddr | TLBLO_VALID;
+		//elo = paddr | TLBLO_VALID;
+		elo &= ~TLBLO_DIRTY;
 		//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
 		tlb_random(ehi, elo);
 		splx(spl);
 		return 0;
 
 	}
-	ehi = faultaddress;
-	elo = paddr | TLBLO_DIRTY | TLBLO_VALID;
 	//DEBUG(DB_VM, "dumbvm: 0x%x -> 0x%x\n", faultaddress, paddr);
 	tlb_random(ehi, elo);
 	splx(spl);
