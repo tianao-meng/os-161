@@ -114,6 +114,10 @@ runprogram(char *progname, char ** args_kspace)
 	}
 	kprintf("%s %d\n", "execv_args_len: ", execv_args_len);
 
+	for (size_t i = 0; i < execv_args_len; i++){
+		kprintf("%s %s\n", "args_kspace[i]: ", args_kspace[i]);
+	}
+
 	vaddr_t args_userspace[execv_args_len + 1];
 
 	size_t stackptr_move;
