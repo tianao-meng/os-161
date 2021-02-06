@@ -413,10 +413,12 @@ vm_fault(int faulttype, vaddr_t faultaddress)
 		return EFAULT;
 	}
 
-	#else
-
 	printf("%s%p\n", "paddr: ", paddr);
 	printf("%s%p\n", "faultaddress: ", faultaddress);
+
+	#else
+
+
 
 	if (faultaddress >= vbase1 && faultaddress < vtop1) {
 		paddr = (faultaddress - vbase1) + as->as_pbase1;
