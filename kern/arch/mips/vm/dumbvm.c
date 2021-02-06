@@ -72,12 +72,12 @@ vm_bootstrap(void)
 	ram_getsize(&coremap_start, &coremap_end);
 
 	npages_available = (coremap_end - coremap_start) / PAGE_SIZE;
-
+	kprintf("%s%d\n", "npages_available before: ", (int)npages_available);
 	coremap_npages = ((npages_available * (sizeof(int))) + PAGE_SIZE) / PAGE_SIZE;
 
 	npages_available = npages_available - coremap_npages;
-	kprintf("%s%d", "npages_available: ", (int)npages_available);
-	kprintf("%s%d", "coremap_npages: ", (int)coremap_npages);
+	kprintf("%s%d\n", "npages_available: ", (int)npages_available);
+	kprintf("%s%d\n", "coremap_npages: ", (int)coremap_npages);
 
 	for (unsigned long i = 0; i < npages_available; i++){
 
