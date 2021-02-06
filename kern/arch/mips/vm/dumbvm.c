@@ -778,7 +778,7 @@ int
 as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 {
 
-	kprintf("%s \n", "i am in as_define_stack");
+	//kprintf("%s \n", "i am in as_define_stack");
 	#if OPT_A3
 	KASSERT(as->as_stackpbase != NULL);
 	#else
