@@ -85,11 +85,11 @@ vm_bootstrap(void)
 
 	}
 
-	for (unsigned long i = 0; i < npages_available ; i++){
+	// for (unsigned long i = 0; i < npages_available ; i++){
 
 		
-		kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
-	}
+	// 	kprintf("%d\n", ((int *) PADDR_TO_KVADDR(coremap_start))[i]);
+	// }
 
 	coremap_ready= true;
 
