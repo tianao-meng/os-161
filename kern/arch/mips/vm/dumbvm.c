@@ -255,7 +255,7 @@ free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
 
-	//kprintf("%s \n", "i am in free_kpages");
+	kprintf("%s \n", "i am in free_kpages");
 
 	#if OPT_A3
 
@@ -322,7 +322,7 @@ int
 vm_fault(int faulttype, vaddr_t faultaddress)
 {
 
-	//kprintf("%s \n", "i am in vm_fault");
+	kprintf("%s \n", "i am in vm_fault");
 	vaddr_t vbase1, vtop1, vbase2, vtop2, stackbase, stacktop;
 	paddr_t paddr;
 	int i;
@@ -585,6 +585,7 @@ as_destroy(struct addrspace *as)
 void
 as_activate(void)
 {
+	kprintf("%s \n", "i am in as_activate");
 	int i, spl;
 	struct addrspace *as;
 
