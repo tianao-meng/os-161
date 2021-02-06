@@ -153,12 +153,12 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 		for (unsigned long cur_page = 0; cur_page < npages_available; cur_page ++){
 
-			if ((cur_page + (unsigned long)1) == page_start){
+			if ((cur_page + 1) == page_start){
 
 				for (unsigned long npages_to_allocate = 0; npages_to_allocate < npage_can_allocate; npages_to_allocate++){
 
 					((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate] = ((int)npages_to_allocate + 1);
-					//kprintf("%s%d\n","cur_page + npages_to_allocate : " , ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate]);
+					kprintf("%s%d\n","cur_page + npages_to_allocate : " , ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page + npages_to_allocate]);
 					//*(int *)(coremap_start + (npages_to_allocate * sizeof(int))) = npages_to_allocate + 1;
 
 				}
