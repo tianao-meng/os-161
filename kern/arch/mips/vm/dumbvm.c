@@ -265,7 +265,7 @@ free_kpages(vaddr_t addr)
 	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 	unsigned long free_start = 0;
 
-	kprintf("%s%d\n", "alloed: ",alloced);
+	kprintf("%s%d\n", "alloed: ",(int)alloced);
 	while (alloced == (free_start + 1)){
 
 		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
