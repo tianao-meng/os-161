@@ -199,6 +199,7 @@ paddr_t
 getppages(unsigned long npages)
 {	
 	kprintf("%s \n", "i am in getppages");
+	kprintf("%s%d\n","npages: " , (int)npages);
 	paddr_t addr;
 
 	#if OPT_A3
@@ -240,6 +241,7 @@ alloc_kpages(int npages)
 {
 
 	kprintf("%s \n", "i am in alloc_kpages");
+
 	paddr_t pa;
 	pa = getppages(npages);
 	if (pa==0) {
