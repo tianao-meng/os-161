@@ -67,17 +67,17 @@ void
 vm_bootstrap(void)
 {	
 
-	kprintf("%s \n", "i am in vm_bootstrap");
+	//kprintf("%s \n", "i am in vm_bootstrap");
 	// get the available physical length after bootstrap
 	ram_getsize(&coremap_start, &coremap_end);
 
 	npages_available = (coremap_end - coremap_start) / PAGE_SIZE;
-	kprintf("%s%d\n", "npages_available before: ", (int)npages_available);
+	//kprintf("%s%d\n", "npages_available before: ", (int)npages_available);
 	coremap_npages = ((npages_available * (sizeof(int))) + PAGE_SIZE) / PAGE_SIZE;
 
 	npages_available = npages_available - coremap_npages;
-	kprintf("%s%d\n", "npages_available: ", (int)npages_available);
-	kprintf("%s%d\n", "coremap_npages: ", (int)coremap_npages);
+	// kprintf("%s%d\n", "npages_available: ", (int)npages_available);
+	// kprintf("%s%d\n", "coremap_npages: ", (int)coremap_npages);
 
 	for (unsigned long i = 0; i < npages_available; i++){
 
@@ -102,7 +102,7 @@ vm_bootstrap(void)
 // the address struc for every process  will not be continuous based on our method
 paddr_t vm_stealmem(unsigned long npages) {
 
-	kprintf("%s \n", "i am in vm_stealmem");
+	//kprintf("%s \n", "i am in vm_stealmem");
 
 	unsigned long page_start = 0;
 
@@ -144,8 +144,8 @@ paddr_t vm_stealmem(unsigned long npages) {
 		}
 
 	}
-	kprintf("%s%d\n","page_start: " , (int)page_start);
-	kprintf("%s%d\n","npage_can_allocate: " , (int)npage_can_allocate);
+	// kprintf("%s%d\n","page_start: " , (int)page_start);
+	// kprintf("%s%d\n","npage_can_allocate: " , (int)npage_can_allocate);
 	// kprintf("%s%d\n","npage_can_allocate: " , (int)npage_can_allocate);
 	// kprintf("%s%d\n","npages: " , (int)npages);
 	if (npage_can_allocate != npages){
@@ -172,7 +172,7 @@ paddr_t vm_stealmem(unsigned long npages) {
 
 
 		}
-		kprintf("%s\n", "steal memory, and print the map");
+		//kprintf("%s\n", "steal memory, and print the map");
 		// for (unsigned long i = 0; i < npages_available ; i++){
 
 		// 	if(((int *) PADDR_TO_KVADDR(coremap_start))[i] == 1){
@@ -198,8 +198,8 @@ static
 paddr_t
 getppages(unsigned long npages)
 {	
-	kprintf("%s \n", "i am in getppages");
-	kprintf("%s%d\n","npages: " , (int)npages);
+	// kprintf("%s \n", "i am in getppages");
+	// kprintf("%s%d\n","npages: " , (int)npages);
 	paddr_t addr;
 
 	#if OPT_A3
@@ -240,7 +240,7 @@ vaddr_t
 alloc_kpages(int npages)
 {
 
-	kprintf("%s \n", "i am in alloc_kpages");
+	//kprintf("%s \n", "i am in alloc_kpages");
 
 	paddr_t pa;
 	pa = getppages(npages);
@@ -255,7 +255,7 @@ free_kpages(vaddr_t addr)
 {
 	/* nothing - leak the memory. */
 
-	kprintf("%s \n", "i am in free_kpages");
+	//kprintf("%s \n", "i am in free_kpages");
 
 	#if OPT_A3
 
@@ -268,7 +268,7 @@ free_kpages(vaddr_t addr)
 	unsigned long alloced = ((int *) PADDR_TO_KVADDR(coremap_start))[cur_page];
 	unsigned long free_start = 0;
 
-	kprintf("%s%d\n", "alloed: ",(int)alloced);
+	//kprintf("%s%d\n", "alloed: ",(int)alloced);
 	while (alloced == (free_start + 1)){
 
 		((int *) PADDR_TO_KVADDR(coremap_start))[cur_page] = 0;
@@ -282,7 +282,7 @@ free_kpages(vaddr_t addr)
 
 	}
 
-	kprintf("%s\n", "free memory, and print the map");
+	//kprintf("%s\n", "free memory, and print the map");
 
 	// int count_1 = 0;
 	// for (unsigned long i = 0; i < npages_available ; i++){
@@ -520,7 +520,7 @@ struct addrspace *
 as_create(void)
 {
 
-	kprintf("%s \n", "i am in as_create");
+	//kprintf("%s \n", "i am in as_create");
 	struct addrspace *as = kmalloc(sizeof(struct addrspace));
 	if (as==NULL) {
 		return NULL;
@@ -556,7 +556,7 @@ void
 as_destroy(struct addrspace *as)
 {
 
-	kprintf("%s \n", "i am in as_destroy");
+	//kprintf("%s \n", "i am in as_destroy");
 	#if OPT_A3
 	for (size_t i = 0; i < as -> as_npages1; i++){
 
@@ -621,7 +621,7 @@ as_define_region(struct addrspace *as, vaddr_t vaddr, size_t sz,
 		 int readable, int writeable, int executable)
 {
 
-	kprintf("%s \n", "i am in as_define_region");
+	//kprintf("%s \n", "i am in as_define_region");
 
 	size_t npages; 
 
@@ -679,7 +679,7 @@ int
 as_prepare_load(struct addrspace *as)
 {
 
-	kprintf("%s \n", "i am in as_prepare_load");
+	//kprintf("%s \n", "i am in as_prepare_load");
 	#if OPT_A3
 
 	// KASSERT(as->as_pbase1 == NULL);
@@ -774,7 +774,7 @@ int
 as_define_stack(struct addrspace *as, vaddr_t *stackptr)
 {
 
-	kprintf("%s \n", "i am in as_define_stack");
+	//kprintf("%s \n", "i am in as_define_stack");
 	#if OPT_A3
 	KASSERT(as->as_stackpbase != NULL);
 	#else
@@ -790,7 +790,7 @@ int
 as_copy(struct addrspace *old, struct addrspace **ret)
 {
 
-	kprintf("%s \n", "i am in as_copy");
+	//kprintf("%s \n", "i am in as_copy");
 	struct addrspace *new;
 
 	new = as_create();
