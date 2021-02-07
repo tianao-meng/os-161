@@ -258,6 +258,7 @@ free_kpages(vaddr_t addr)
 	//kprintf("%s %p\n", "vaddr_t addr: ", (void *) addr);
 
 	#if OPT_A3
+	
 	paddr_t phaddr = addr - MIPS_KSEG0;
 	spinlock_acquire(&coremap_lock);
 
@@ -558,7 +559,7 @@ as_destroy(struct addrspace *as)
 	//kprintf("%s \n", "i am in as_destroy");
 	kprintf("%s %p\n", "as -> vbase1: ", (void *) as -> as_vbase1);
 	kprintf("%s %p\n", "as -> vbase2: ", (void *) as -> as_vbase2);
-	kprintf("%s %p\n", "as -> as_stackpbase: ", (void *) as -> as_stackpbase);
+	//kprintf("%s %p\n", "as -> as_stackpbase: ", (void *) as -> as_stackpbase);
 	//kprintf("%s %p\n", "vaddr_t addr: ", (void *) as -> vbase2);
 	#if OPT_A3
 	for (size_t i = 0; i < as -> as_npages1; i++){
